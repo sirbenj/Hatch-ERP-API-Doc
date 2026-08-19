@@ -15,8 +15,8 @@ servers:
     description: >
       The Tenant ID and the Environement Name is provided in separate document. Including the client credential.
 
-security:
-  - oauth2ClientCredentials: []
+# security:
+#   - oauth2ClientCredentials: []
 
 tags:
   - name: Companies
