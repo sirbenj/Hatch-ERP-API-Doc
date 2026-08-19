@@ -584,15 +584,15 @@ paths:
 
 components:
 
-  securitySchemes:
-    oauth2ClientCredentials:
-      type: oauth2
-      description: >
-        Azure AD OAuth 2.0 client credentials flow.
-        Token endpoint: https://login.microsoftonline.com/{TENANT_ID}/oauth2/v2.0/token
-      flows:
-        clientCredentials:
-          tokenUrl: https://login.microsoftonline.com/{TENANT_ID}/oauth2/v2.0/token
+  # securitySchemes:
+  #   oauth2ClientCredentials:
+  #     type: oauth2
+  #     description: >
+  #       Azure AD OAuth 2.0 client credentials flow.
+  #       Token endpoint: https://login.microsoftonline.com/{TENANT_ID}/oauth2/v2.0/token
+  #     flows:
+  #       clientCredentials:
+  #         tokenUrl: https://login.microsoftonline.com/{TENANT_ID}/oauth2/v2.0/token
 
   parameters:
     CompanyParam:
