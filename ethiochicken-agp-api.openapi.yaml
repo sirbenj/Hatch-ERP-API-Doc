@@ -10,14 +10,7 @@ info:
     Field types, lengths, and mandatory flags were sourced directly from the
     compiled `OrderingAppAPI_BPIT_1.0.0.53` extension (Base Application +
     ADV/BPIT dependency apps), not just the sample Postman payloads.
-
-
-    Known discrepancies between the original Postman collection and the
-    compiled extension (naming mismatches, environment inconsistencies,
-    fields present but not wired into create logic, etc.) are called out in
-    `x-known-issues` at the bottom of this document — read that before
-    building a client against this spec.
-  version: "1.0.53"
+  version: "1.0.0.1"
   contact:
     name: Hatch Africa Enterprise Technology
 externalDocs:
@@ -1186,11 +1179,4 @@ components:
         Population:
           type: integer
 
-x-known-issues:
-  - "1. createPayment naming mismatch: Postman calls POST .../createPayment, but the compiled extension's matching page is named 'Cash Receipt Journal API' (EntitySetName CashReceiptJournalAPIs). Confirm which is live in TEST."
-  - "2. updateCustomer / createCustomerAgent naming mismatch: PATCH updateCustomer targets .../createCustomerAgent('{customerNo}'), but the compiled extension exposes createCustomers (Agent, keyed by No.) and createCustomersAgents (actually the Dealer page). Verify live $metadata before relying on this path."
-  - "3. Environment inconsistency in the original collection: Sandbox/TEST/Test/test/upgrade-26 were all used for AGP requests; this spec standardizes on TEST. createCustomerAgent specifically was originally called against upgrade-26."
-  - "4. Unblock-quote payload: the AGP sample sends {\"Plate No.\": \"123764\"} rather than externalDocumentNo/blocked — confirm which is authoritative."
-  - "5. Agent_Kebele / Agent_Contact_Information / Standby_Person / Agreement appear on customer-creation pages but aren't referenced in the create/update codeunits reviewed — confirm they actually persist."
-  - "6. ETag / concurrency: standard BC OData PATCH normally expects If-Match; none of the captured requests set it. Client should handle 412 responses."
-  - "7. No sample responses were captured in the source Postman collection; response schemas above mirror the request-side field names per BC API convention and should be confirmed against a live call."
+
