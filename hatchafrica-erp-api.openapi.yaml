@@ -9,7 +9,7 @@ info:
     name: Hatch Africa Enterprise Technology
 externalDocs:
 
-Base URL:
+servers:
   - url: https://api.businesscentral.dynamics.com/v2.0/{TENAT_ID}/{Environment}
     description: >
       The Tenant ID and the Environement Name is provided in separate document. Including the client credential.
