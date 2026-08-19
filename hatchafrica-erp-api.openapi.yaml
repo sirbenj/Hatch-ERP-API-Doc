@@ -3,14 +3,14 @@ info:
   title: Hatchafrica – Business Central API
   description: >
     Integration API on top of Microsoft Dynamics 365 Business Central for
-    AGP Poultry PLC (Ethiopia) Test.
+    AGP Poultry PLC (Ethiopia).
   version: "1.0.0.1"
   contact:
     name: Hatch Africa Enterprise Technology
 externalDocs:
-  description: Full developer reference (field-by-field notes, discrepancy list)
+  description: 
   url:
-servers:
+baseUrl:
   - url: https://api.businesscentral.dynamics.com/v2.0/{TENAT_ID}/{Environment}
     description: >
       The Tenant ID and the Environement Name is provided in separate document. Including the client credential.
