@@ -1,0 +1,1199 @@
+openapi: 3.0.3
+info:
+  title: Ethiochicken – Business Central API (AGP)
+  description: >
+    Integration API on top of Microsoft Dynamics 365 Business Central for
+    AGP Poultry PLC (Ethiopia). Covers customers, products/pricing, sales
+    quotes, sales orders, payments, and reference/lookup data.
+
+
+    Field types, lengths, and mandatory flags were sourced directly from the
+    compiled `OrderingAppAPI_BPIT_1.0.0.53` extension (Base Application +
+    ADV/BPIT dependency apps), not just the sample Postman payloads.
+
+
+    Known discrepancies between the original Postman collection and the
+    compiled extension (naming mismatches, environment inconsistencies,
+    fields present but not wired into create logic, etc.) are called out in
+    `x-known-issues` at the bottom of this document — read that before
+    building a client against this spec.
+  version: "1.0.53"
+  contact:
+    name: Ethiochicken / Hatch Africa Enterprise Technology
+externalDocs:
+  description: Full developer reference (field-by-field notes, discrepancy list)
+  url: https://internal-docs.example.com/ethiochicken-agp-api
+
+servers:
+  - url: https://api.businesscentral.dynamics.com/v2.0/535aeb8f-6de7-494c-b5dc-69fc6eef1568/TEST
+    description: >
+      TEST environment, tenant 535aeb8f-6de7-494c-b5dc-69fc6eef1568.
+      Confirm with your BC admin that TEST is the correct/live environment
+      before pointing production traffic at it — the original Postman
+      collection used a mix of Sandbox/TEST/Test/test/upgrade-26.
+
+security:
+  - oauth2ClientCredentials: []
+
+tags:
+  - name: Companies
+  - name: Customers
+  - name: Products
+  - name: Sales Quotes
+  - name: Sales Orders
+  - name: Payments
+  - name: Reference Data
+
+paths:
+
+  # ---------------------------------------------------------------
+  # 1. Companies (custom REST API)
+  # ---------------------------------------------------------------
+  /api/ech/echgroup/v1.0/companies:
+    get:
+      tags: [Companies]
+      summary: List companies accessible to this app registration
+      description: Tenant-wide; no company parameter needed.
+      operationId: listCompanies
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  value:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        displayName:
+                          type: string
+
+  # ---------------------------------------------------------------
+  # 2. Customers
+  # ---------------------------------------------------------------
+  "/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/customers":
+    get:
+      tags: [Customers]
+      summary: List customers, or a single customer via $filter
+      operationId: listCustomers
+      parameters:
+        - name: $filter
+          in: query
+          description: >
+            e.g. `customerNo eq 'AGP-A00002'` to fetch a single customer.
+          schema:
+            type: string
+          example: "customerNo eq 'AGP-A00002'"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  value:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Customer"
+
+  "/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/createCustomerAgent":
+    post:
+      tags: [Customers]
+      summary: Create a customer (Agent)
+      description: >
+        `customerNo` is system-generated (No. Series) — do not rely on any
+        value you send. `priceGroup` is mandatory and must be exactly
+        `AGENT`, `DEALER`, or `AGENT-DEAL`. Posting-group fields are
+        hard-coded to `LOCAL` regardless of input. See x-known-issues for
+        the `upgrade-26` vs `TEST` environment mismatch found in the
+        original collection for this specific call.
+      operationId: createCustomerAgent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomerCreate"
+            example:
+              name: "Eusubalewu Amenu"
+              salesPersonCode: "YA001"
+              phoneNumber: "+251936934945"
+              dateOfBirth: "1999-10-12"
+              gender: "Male"
+              addressOne: "Dilla Zuriya"
+              addressTwo: "Dilla Zuria"
+              city: "Gedeo"
+              country: "ET"
+              postCode: "DILLA ZURIA"
+              territory: "SERS"
+              priceGroup: "AGENT"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+
+  "/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/createCustomerAgent('{customerNo}')":
+    patch:
+      tags: [Customers]
+      summary: Update a customer
+      description: >
+        NOTE: the Postman collection calls this path, but the compiled
+        extension's own entity set names are `createCustomers` (Agent) and
+        `createCustomersAgents` (actually the Dealer page) — neither
+        matches exactly. Confirm the live `$metadata` before relying on
+        this path. See x-known-issues #2.
+      operationId: updateCustomer
+      parameters:
+        - name: customerNo
+          in: path
+          required: true
+          schema:
+            type: string
+            maxLength: 20
+          example: "AGP-A00001"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomerCreate"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+
+  "/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/createCustomerDealer":
+    post:
+      tags: [Customers]
+      summary: Create a customer (Dealer)
+      description: >
+        Same fields as Agent creation. `priceGroup` is ignored — always
+        fixed to `DEALER` internally. This endpoint is create-only; GET is
+        rejected by the extension with "Get request is not allowed for
+        this API endpoint".
+      operationId: createCustomerDealer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomerCreate"
+            example:
+              name: "Abdi hussein"
+              salesPersonCode: "AH001"
+              phoneNumber: "+251915674330"
+              dateOfBirth: "1987-08-11"
+              gender: "Male"
+              addressOne: "Gadullo"
+              addressTwo: "Gadullo"
+              city: "West Hararghe"
+              country: "ET"
+              postCode: "DAROLABU"
+              territory: "TIG"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+
+  # ---------------------------------------------------------------
+  # 3. Products & Pricing
+  # ---------------------------------------------------------------
+  "/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/products":
+    get:
+      tags: [Products]
+      summary: List products, or a single product via $filter
+      operationId: listProducts
+      parameters:
+        - name: $filter
+          in: query
+          description: e.g. `productNo eq 'BSS001'` to fetch a single product.
+          schema:
+            type: string
+          example: "productNo eq 'BSS001'"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  value:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Product"
+
+  "/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/productPrices":
+    get:
+      tags: [Products]
+      summary: List product prices
+      operationId: listProductPrices
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  value:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Product"
+
+  # ---------------------------------------------------------------
+  # 4. Sales Quotes (custom REST API)
+  # ---------------------------------------------------------------
+  /api/ech/echgroup/v1.0/salesQuotes:
+    get:
+      tags: [Sales Quotes]
+      summary: List sales quotes
+      operationId: listSalesQuotes
+      parameters:
+        - $ref: "#/components/parameters/CompanyParam"
+        - $ref: "#/components/parameters/ExpandLinesParam"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  value:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/SalesQuote"
+    post:
+      tags: [Sales Quotes]
+      summary: Create a sales quote
+      operationId: createSalesQuote
+      parameters:
+        - $ref: "#/components/parameters/CompanyParam"
+        - $ref: "#/components/parameters/ExpandLinesParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SalesQuoteCreate"
+            example:
+              customerNo: "AGP-A00002"
+              orderDate: "2024-12-05"
+              addressOne: "Mekelle"
+              addressTwo: "Mekelle"
+              requestedDeliveryDate: "2024-12-21"
+              salesQuoteLines:
+                - count: 100
+                  type: "Item"
+                  productNo: "DOCS003"
+                  quantity: 1
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SalesQuote"
+
+  "/api/ech/echgroup/v1.0/salesQuotes('{quoteNo}')":
+    get:
+      tags: [Sales Quotes]
+      summary: Get a single sales quote
+      operationId: getSalesQuote
+      parameters:
+        - $ref: "#/components/parameters/QuoteNoPathParam"
+        - $ref: "#/components/parameters/CompanyParam"
+        - $ref: "#/components/parameters/ExpandLinesParam"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SalesQuote"
+    patch:
+      tags: [Sales Quotes]
+      summary: Update a sales quote
+      operationId: updateSalesQuote
+      parameters:
+        - $ref: "#/components/parameters/QuoteNoPathParam"
+        - $ref: "#/components/parameters/CompanyParam"
+        - $ref: "#/components/parameters/ExpandLinesParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SalesQuoteUpdate"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SalesQuote"
+
+  "/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/salesQuotes('{quoteNo}')":
+    patch:
+      tags: [Sales Quotes]
+      summary: Unblock a sales quote
+      description: >
+        The AGP sample payload sends `"Plate No."` rather than
+        `externalDocumentNo`/`blocked` — confirm which field is actually
+        authoritative before relying on this (x-known-issues #4).
+      operationId: unblockSalesQuote
+      parameters:
+        - $ref: "#/components/parameters/QuoteNoPathParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Plate No.:
+                  type: string
+                  maxLength: 30
+                externalDocumentNo:
+                  type: string
+                  maxLength: 35
+                blocked:
+                  type: boolean
+            example:
+              "Plate No.": "123764"
+      responses:
+        "200":
+          description: OK
+
+  # ---------------------------------------------------------------
+  # 5. Sales Orders (custom REST API)
+  # ---------------------------------------------------------------
+  "/api/ech/echgroup/v1.0/salesOrders('{orderNo}')":
+    get:
+      tags: [Sales Orders]
+      summary: Get a single sales order
+      description: >
+        The OData key for this endpoint is `Quote No.`, not `No.` — the
+        order is looked up by its originating quote number.
+      operationId: getSalesOrder
+      parameters:
+        - name: orderNo
+          in: path
+          required: true
+          description: The originating Quote No., not the Sales Order No.
+          schema:
+            type: string
+            maxLength: 20
+          example: "HO-SQ-44416"
+        - $ref: "#/components/parameters/CompanyParam"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SalesOrder"
+    patch:
+      tags: [Sales Orders]
+      summary: Update a sales order (delivery status, plate number, requested delivery date)
+      operationId: updateSalesOrder
+      parameters:
+        - name: orderNo
+          in: path
+          required: true
+          description: The originating Quote No., not the Sales Order No.
+          schema:
+            type: string
+            maxLength: 20
+          example: "HO-SQ-44416"
+        - $ref: "#/components/parameters/CompanyParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SalesOrderUpdate"
+            examples:
+              deliveryStatusAndPlate:
+                summary: Update delivery status / plate number
+                value:
+                  deliveryStatus: "ASM: Customer ready to receive"
+                  PlateNo: "12314"
+              deliveryDateAndStatus:
+                summary: Update requested delivery date & status
+                value:
+                  requestedDeliveryDate: "2025-02-28"
+                  deliveryStatus: "ASM: Not Ready for Delivery"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SalesOrder"
+
+  # ---------------------------------------------------------------
+  # 6. Payments
+  # ---------------------------------------------------------------
+  "/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/createPayment":
+    post:
+      tags: [Payments]
+      summary: Create a payment
+      description: >
+        NOTE: the compiled extension's matching page is named "Cash
+        Receipt Journal API" with EntitySetName `CashReceiptJournalAPIs` —
+        confirm which name is live in TEST before relying on this path
+        (x-known-issues #1).
+      operationId: createPayment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentCreate"
+            example:
+              date: "2025-02-21"
+              externalDocumentNo: "kjlkmlkjljoojkklAT15"
+              customerNo: "AGP-A19800"
+              amount: 500000
+              accountNo: "B-ETB-CBE0001"
+              orderNo: "HO-SO-100431"
+              attachmentUrl: "WWW.EXAMPLE.COM"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Payment"
+
+  # ---------------------------------------------------------------
+  # 7. Reference / lookup data (all read-only)
+  # ---------------------------------------------------------------
+  "/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/bankDetails":
+    get:
+      tags: [Reference Data]
+      summary: List bank details
+      operationId: listBankDetails
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  value:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/BankDetail"
+
+  "/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/salesPerson":
+    get:
+      tags: [Reference Data]
+      summary: List sales persons, or a single one via $filter
+      operationId: listSalesPersons
+      parameters:
+        - name: $filter
+          in: query
+          description: e.g. `code eq 'AA001'` to fetch a single sales person.
+          schema:
+            type: string
+          example: "code eq 'AA001'"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  value:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/SalesPerson"
+
+  "/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/getGeography":
+    get:
+      tags: [Reference Data]
+      summary: List geography reference data (post codes, territories, etc.)
+      operationId: getGeography
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  value:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Geography"
+
+  "/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/getSalesShipment":
+    get:
+      tags: [Reference Data]
+      summary: List sales shipments
+      operationId: getSalesShipment
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  value:
+                    type: array
+                    items:
+                      type: object
+
+  "/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/getBankLedger":
+    get:
+      tags: [Reference Data]
+      summary: List bank ledger entries
+      operationId: getBankLedger
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  value:
+                    type: array
+                    items:
+                      type: object
+
+  "/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/OrdersandItems":
+    get:
+      tags: [Reference Data]
+      summary: List sales orders joined with their item lines
+      operationId: getOrdersAndItems
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  value:
+                    type: array
+                    items:
+                      type: object
+
+  "/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/salesQuoteandItems":
+    get:
+      tags: [Reference Data]
+      summary: List sales quotes joined with their item lines
+      operationId: getSalesQuoteAndItems
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  value:
+                    type: array
+                    items:
+                      type: object
+
+components:
+
+  securitySchemes:
+    oauth2ClientCredentials:
+      type: oauth2
+      description: >
+        Azure AD OAuth 2.0 client credentials flow.
+        Token endpoint: https://login.microsoftonline.com/535aeb8f-6de7-494c-b5dc-69fc6eef1568/oauth2/v2.0/token
+      flows:
+        clientCredentials:
+          tokenUrl: https://login.microsoftonline.com/535aeb8f-6de7-494c-b5dc-69fc6eef1568/oauth2/v2.0/token
+          scopes:
+            https://api.businesscentral.dynamics.com/.default: >
+              Full access as granted to the app registration
+              (API.ReadWrite.All, Automation.ReadWrite.All,
+              AdminCenter.ReadWrite.All, app_access — scope down per
+              integration where possible)
+
+  parameters:
+    CompanyParam:
+      name: company
+      in: query
+      required: true
+      description: Company name, used by the custom REST API instead of a path segment.
+      schema:
+        type: string
+        default: "AGP Poultry PLC (Ethiopia)"
+      example: "AGP Poultry PLC (Ethiopia)"
+    ExpandLinesParam:
+      name: $expand
+      in: query
+      description: Include related sales quote lines.
+      schema:
+        type: string
+        default: salesQuoteLines
+      example: salesQuoteLines
+    QuoteNoPathParam:
+      name: quoteNo
+      in: path
+      required: true
+      schema:
+        type: string
+        maxLength: 20
+      example: "AD-SQ-24782"
+
+  schemas:
+
+    # ---- Customers ----
+    Customer:
+      type: object
+      properties:
+        customerNo:
+          type: string
+          maxLength: 20
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        salesPersonCode:
+          type: string
+          maxLength: 20
+        phoneNumber:
+          type: string
+          maxLength: 30
+        phoneNumber2:
+          type: string
+          maxLength: 30
+        alternativePhoneNo:
+          type: string
+          maxLength: 30
+          description: Maps to Mobile Phone No.
+        alternativePhoneNo2:
+          type: string
+          maxLength: 30
+        country:
+          type: string
+          maxLength: 10
+        territory:
+          type: string
+          maxLength: 10
+        city:
+          type: string
+          maxLength: 30
+        postCode:
+          type: string
+          maxLength: 20
+        addressOne:
+          type: string
+          maxLength: 100
+        addressTwo:
+          type: string
+          maxLength: 50
+        balance:
+          type: number
+          format: double
+          readOnly: true
+          description: Sign-reversed for display.
+        status:
+          type: string
+          maxLength: 20
+          readOnly: true
+          description: Derived "Active"/"Not Active" text, not the raw Blocked enum.
+        dateOfBirth:
+          type: string
+          format: date
+        gender:
+          type: string
+          enum: [Male, Female]
+        tin:
+          type: string
+          maxLength: 40
+          description: Maps to EORI Number.
+        priceGroup:
+          type: string
+          maxLength: 10
+        Agent_Kebele:
+          type: string
+          maxLength: 2048
+        Agent_Contact_Information:
+          type: string
+          maxLength: 2048
+        Standby_Person:
+          type: string
+          maxLength: 2048
+        Agreement:
+          type: string
+          maxLength: 2048
+
+    CustomerCreate:
+      type: object
+      required:
+        - priceGroup
+      properties:
+        name:
+          type: string
+          maxLength: 100
+        salesPersonCode:
+          type: string
+          maxLength: 20
+        phoneNumber:
+          type: string
+          maxLength: 30
+          description: >
+            Auto-reformatted to +251 XX XXX XXXX if given as a 10-digit
+            local number starting with 0.
+        phoneNumber2:
+          type: string
+          maxLength: 30
+        alternativePhoneNo:
+          type: string
+          maxLength: 30
+          description: Maps to Mobile Phone No.; same auto-format applied.
+        alternativePhoneNo2:
+          type: string
+          maxLength: 30
+        country:
+          type: string
+          maxLength: 10
+        territory:
+          type: string
+          maxLength: 10
+          description: Unmatched values silently fall back to UNKNOWN, no error.
+        city:
+          type: string
+          maxLength: 30
+        postCode:
+          type: string
+          maxLength: 20
+        addressOne:
+          type: string
+          maxLength: 100
+        addressTwo:
+          type: string
+          maxLength: 50
+        dateOfBirth:
+          type: string
+          format: date
+        gender:
+          type: string
+          enum: [Male, Female]
+        tin:
+          type: string
+          maxLength: 40
+          description: EORI Number.
+        priceGroup:
+          type: string
+          enum: [AGENT, DEALER, AGENT-DEAL]
+          description: >
+            MANDATORY. Anything else throws "Invalid Price Group %1.
+            Expected AGENT or DEALER." Ignored entirely on the Dealer
+            creation endpoint (always fixed to DEALER internally).
+        Agent_Kebele:
+          type: string
+          maxLength: 2048
+          description: >
+            Present on the page but not wired into the create logic in
+            the version reviewed — confirm with the BC developer whether
+            this persists.
+        Agent_Contact_Information:
+          type: string
+          maxLength: 2048
+        Standby_Person:
+          type: string
+          maxLength: 2048
+        Agreement:
+          type: string
+          maxLength: 2048
+
+    # ---- Products & Pricing ----
+    Product:
+      type: object
+      properties:
+        priceGroup:
+          type: string
+          maxLength: 20
+          description: Price List "Assign-to No."
+        productNo:
+          type: string
+          maxLength: 20
+          description: Price List Line "Asset No."
+        name:
+          type: string
+          maxLength: 100
+        unitOfMeasure:
+          type: string
+          maxLength: 10
+        unitPrice:
+          type: number
+          format: double
+          readOnly: true
+          description: >
+            System-calculated (Unit_Price_Including_VAT): unit price plus
+            VAT, computed from the item's VAT posting group.
+        currencyCode:
+          type: string
+          maxLength: 10
+        locationCode:
+          type: string
+          maxLength: 10
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        type:
+          type: string
+          maxLength: 20
+          description: Gen. Prod. Posting Group.
+        vatCode:
+          type: string
+          maxLength: 20
+          description: VAT Prod. Posting Group.
+        status:
+          type: boolean
+          description: Blocked (sign-reversed for display).
+        salesStatus:
+          type: boolean
+          description: Sales Blocked.
+        inventory:
+          type: number
+          format: double
+          readOnly: true
+
+    # ---- Sales Quotes / Orders ----
+    SalesQuoteLine:
+      type: object
+      required:
+        - productNo
+        - quantity
+      properties:
+        orderNo:
+          type: string
+          maxLength: 20
+          readOnly: true
+          description: Document No.; inherited from parent header.
+        count:
+          type: integer
+          readOnly: true
+          description: Line No.
+        type:
+          type: string
+          enum: [" ", "G/L Account", Item, Resource, "Fixed Asset", "Charge (Item)", "Allocation Account"]
+        itemType:
+          type: string
+          maxLength: 20
+          readOnly: true
+          description: Gen. Prod. Posting Group, derived from the item.
+        productNo:
+          type: string
+          maxLength: 20
+        quantity:
+          type: number
+          format: double
+        unitPrice:
+          type: number
+          format: double
+          description: Normally auto-calculated from the price list if omitted.
+
+    SalesQuoteCreate:
+      type: object
+      required:
+        - customerNo
+        - salesPersonCode
+        - salesQuoteLines
+      properties:
+        customerNo:
+          type: string
+          maxLength: 20
+          description: Sell-to Customer No.
+        salesPersonCode:
+          type: string
+          maxLength: 20
+          description: >
+            MANDATORY. "Salesperson Code must be selected." is thrown on
+            modify if blank.
+        addressOne:
+          type: string
+          maxLength: 100
+        addressTwo:
+          type: string
+          maxLength: 50
+        city:
+          type: string
+          maxLength: 30
+        orderDate:
+          type: string
+          format: date
+        requestedDeliveryDate:
+          type: string
+          format: date
+          description: Maps to Due Date.
+        promisedDeliveryDate:
+          type: string
+          format: date
+          description: Also maps to Due Date (same underlying field).
+        blocked:
+          type: boolean
+        yourReference:
+          type: string
+          maxLength: 35
+        externalDocumentNo:
+          type: string
+          maxLength: 35
+        salesQuoteLines:
+          type: array
+          items:
+            $ref: "#/components/schemas/SalesQuoteLine"
+
+    SalesQuoteUpdate:
+      allOf:
+        - $ref: "#/components/schemas/SalesQuoteCreate"
+      description: Same shape as create; all fields optional on update.
+
+    SalesQuote:
+      type: object
+      properties:
+        orderNo:
+          type: string
+          maxLength: 20
+          readOnly: true
+          description: Sales Header "No."; auto-assigned by No. Series.
+        customerNo:
+          type: string
+          maxLength: 20
+        salesPersonCode:
+          type: string
+          maxLength: 20
+        addressOne:
+          type: string
+          maxLength: 100
+        addressTwo:
+          type: string
+          maxLength: 50
+        city:
+          type: string
+          maxLength: 30
+        orderType:
+          type: string
+          enum: [Normal, "Package Sale"]
+          readOnly: true
+          description: System-derived from line items' product type.
+        status:
+          type: string
+          enum: [Open, Released, "Pending Approval", "Pending Prepayment"]
+          readOnly: true
+        orderDate:
+          type: string
+          format: date
+        requestedDeliveryDate:
+          type: string
+          format: date
+        promisedDeliveryDate:
+          type: string
+          format: date
+        deliveryStatus:
+          $ref: "#/components/schemas/DeliveryStatus"
+        responsibilityCenter:
+          type: string
+          maxLength: 10
+          readOnly: true
+          description: Auto-populated from the customer's post code lookup.
+        blocked:
+          type: boolean
+        yourReference:
+          type: string
+          maxLength: 35
+        externalDocumentNo:
+          type: string
+          maxLength: 35
+        salesQuoteLines:
+          type: array
+          items:
+            $ref: "#/components/schemas/SalesQuoteLine"
+
+    DeliveryStatus:
+      type: string
+      enum:
+        - Pending
+        - "Ready for Delivery"
+        - "Picked for Delivery"
+        - "ASM: Not Ready for Delivery"
+        - "ASM: Customer ready to receive"
+
+    SalesOrder:
+      allOf:
+        - $ref: "#/components/schemas/SalesQuote"
+        - type: object
+          properties:
+            ResponsibilityCenter:
+              type: string
+              maxLength: 10
+
+    SalesOrderUpdate:
+      type: object
+      properties:
+        deliveryStatus:
+          $ref: "#/components/schemas/DeliveryStatus"
+        PlateNo:
+          type: string
+          maxLength: 30
+        requestedDeliveryDate:
+          type: string
+          format: date
+
+    # ---- Payments ----
+    PaymentCreate:
+      type: object
+      required:
+        - date
+        - customerNo
+        - amount
+        - accountNo
+      properties:
+        date:
+          type: string
+          format: date
+          description: Maps to Posting Date.
+        externalDocumentNo:
+          type: string
+          maxLength: 35
+          description: >
+            Must be unique per journal template/batch if supplied — a
+            duplicate throws "The External Document No. %1 already
+            exists."
+        customerNo:
+          type: string
+          maxLength: 20
+          description: Maps to Account No.
+        amount:
+          type: number
+          format: double
+          description: >
+            Positive amounts are automatically negated on validate
+            (payments are stored as credits).
+        accountNo:
+          type: string
+          maxLength: 20
+          description: Maps to Bal. Account No. — the bank account receiving the payment.
+        orderNo:
+          type: string
+          maxLength: 20
+          description: Maps to Sales Quote No.
+        attachmentUrl:
+          type: string
+          maxLength: 400
+          description: >
+            Maps to a field literally named Picture in the journal line
+            extension, despite holding a URL string, not an image.
+
+    Payment:
+      allOf:
+        - $ref: "#/components/schemas/PaymentCreate"
+        - type: object
+          properties:
+            paymentNo:
+              type: string
+              format: uuid
+              readOnly: true
+              description: Returned as the record's SystemId.
+
+    # ---- Reference data ----
+    BankDetail:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 20
+        description:
+          type: string
+          maxLength: 100
+        balAccountNo:
+          type: string
+          maxLength: 20
+
+    SalesPerson:
+      type: object
+      properties:
+        code:
+          type: string
+          maxLength: 20
+        name:
+          type: string
+          maxLength: 50
+        type:
+          type: string
+          maxLength: 30
+          description: Job Title.
+        RSM:
+          type: string
+          maxLength: 20
+        NSM:
+          type: string
+          maxLength: 20
+        phoneNumber:
+          type: string
+          maxLength: 30
+        blocked:
+          type: boolean
+
+    Geography:
+      type: object
+      properties:
+        Level_3:
+          type: string
+          maxLength: 20
+          description: Post Code.
+        Level_2:
+          type: string
+          maxLength: 30
+          description: City.
+        Level_1:
+          type: string
+          maxLength: 20
+          description: Territory.
+        Country:
+          type: string
+          maxLength: 10
+        Responsibility_Center:
+          type: string
+          maxLength: 10
+        Transport_Method:
+          type: string
+          maxLength: 10
+        Sales_Representative:
+          type: string
+          maxLength: 10
+        Population:
+          type: integer
+
+x-known-issues:
+  - "1. createPayment naming mismatch: Postman calls POST .../createPayment, but the compiled extension's matching page is named 'Cash Receipt Journal API' (EntitySetName CashReceiptJournalAPIs). Confirm which is live in TEST."
+  - "2. updateCustomer / createCustomerAgent naming mismatch: PATCH updateCustomer targets .../createCustomerAgent('{customerNo}'), but the compiled extension exposes createCustomers (Agent, keyed by No.) and createCustomersAgents (actually the Dealer page). Verify live $metadata before relying on this path."
+  - "3. Environment inconsistency in the original collection: Sandbox/TEST/Test/test/upgrade-26 were all used for AGP requests; this spec standardizes on TEST. createCustomerAgent specifically was originally called against upgrade-26."
+  - "4. Unblock-quote payload: the AGP sample sends {\"Plate No.\": \"123764\"} rather than externalDocumentNo/blocked — confirm which is authoritative."
+  - "5. Agent_Kebele / Agent_Contact_Information / Standby_Person / Agreement appear on customer-creation pages but aren't referenced in the create/update codeunits reviewed — confirm they actually persist."
+  - "6. ETag / concurrency: standard BC OData PATCH normally expects If-Match; none of the captured requests set it. Client should handle 412 responses."
+  - "7. No sample responses were captured in the source Postman collection; response schemas above mirror the request-side field names per BC API convention and should be confirmed against a live call."
