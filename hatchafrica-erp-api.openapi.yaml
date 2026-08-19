@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: Hatchafrica – Business Central API
   description: >
-    Integration API on top of Microsoft Dynamics 365 Business Central  for
+    Integration API on top of Microsoft Dynamics 365 Business Central for
     AGP Poultry PLC (Ethiopia).
   version: "1.0.0.1"
   contact:
