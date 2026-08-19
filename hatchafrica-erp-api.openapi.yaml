@@ -31,7 +31,7 @@ paths:
   # ---------------------------------------------------------------
   # 1. Companies (custom REST API)
   # ---------------------------------------------------------------
-  {{baseUrl}}/api/ech/echgroup/v1.0/companies:
+  "{{baseUrl}}/api/ech/echgroup/v1.0/companies":
     get:
       tags: [Companies]
       summary: List companies accessible to this app registration
@@ -92,9 +92,7 @@ paths:
         `customerNo` is system-generated (No. Series) — do not rely on any
         value you send. `priceGroup` is mandatory and must be exactly
         `AGENT`, `DEALER`, or `AGENT-DEAL`. Posting-group fields are
-        hard-coded to `LOCAL` regardless of input. See x-known-issues for
-        the `upgrade-26` vs `TEST` environment mismatch found in the
-        original collection for this specific call.
+        hard-coded to `LOCAL` regardless of input. 
       operationId: createCustomerAgent
       requestBody:
         required: true
@@ -128,11 +126,6 @@ paths:
       tags: [Customers]
       summary: Update a customer
       description: >
-        NOTE: the Postman collection calls this path, but the compiled
-        extension's own entity set names are `createCustomers` (Agent) and
-        `createCustomersAgents` (actually the Dealer page) — neither
-        matches exactly. Confirm the live `$metadata` before relying on
-        this path. See x-known-issues #2.
       operationId: updateCustomer
       parameters:
         - name: customerNo
@@ -161,10 +154,6 @@ paths:
       tags: [Customers]
       summary: Create a customer (Dealer)
       description: >
-        Same fields as Agent creation. `priceGroup` is ignored — always
-        fixed to `DEALER` internally. This endpoint is create-only; GET is
-        rejected by the extension with "Get request is not allowed for
-        this API endpoint".
       operationId: createCustomerDealer
       requestBody:
         required: true
@@ -241,7 +230,7 @@ paths:
   # ---------------------------------------------------------------
   # 4. Sales Quotes (custom REST API)
   # ---------------------------------------------------------------
-  {{baseUrl}}/api/ech/echgroup/v1.0/salesQuotes:
+  "{{baseUrl}}/api/ech/echgroup/v1.0/salesQuotes":
     get:
       tags: [Sales Quotes]
       summary: List sales quotes
@@ -336,9 +325,6 @@ paths:
       tags: [Sales Quotes]
       summary: Unblock a sales quote
       description: >
-        The AGP sample payload sends `"Plate No."` rather than
-        `externalDocumentNo`/`blocked` — confirm which field is actually
-        authoritative before relying on this (x-known-issues #4).
       operationId: unblockSalesQuote
       parameters:
         - $ref: "#/components/parameters/QuoteNoPathParam"
@@ -371,8 +357,6 @@ paths:
       tags: [Sales Orders]
       summary: Get a single sales order
       description: >
-        The OData key for this endpoint is `Quote No.`, not `No.` — the
-        order is looked up by its originating quote number.
       operationId: getSalesOrder
       parameters:
         - name: orderNo
@@ -438,10 +422,6 @@ paths:
       tags: [Payments]
       summary: Create a payment
       description: >
-        NOTE: the compiled extension's matching page is named "Cash
-        Receipt Journal API" with EntitySetName `CashReceiptJournalAPIs` —
-        confirm which name is live in TEST before relying on this path
-        (x-known-issues #1).
       operationId: createPayment
       requestBody:
         required: true
@@ -665,22 +645,25 @@ components:
         alternativePhoneNo:
           type: string
           maxLength: 30
-          description: Maps to Mobile Phone No.
         alternativePhoneNo2:
           type: string
           maxLength: 30
         country:
           type: string
           maxLength: 10
+          description: Auto-populated from the post code lookup.          
         territory:
           type: string
           maxLength: 10
+          description: Auto-populated from the post code lookup.          
         city:
           type: string
           maxLength: 30
+          description: Auto-populated from the post code lookup.          
         postCode:
           type: string
           maxLength: 20
+          description: Auto-populated from the post code lookup.          
         addressOne:
           type: string
           maxLength: 100
@@ -691,12 +674,11 @@ components:
           type: number
           format: double
           readOnly: true
-          description: Sign-reversed for display.
         status:
           type: string
           maxLength: 20
           readOnly: true
-          description: Derived "Active"/"Not Active" text, not the raw Blocked enum.
+          enum: [Open, Released, "Pending Approval", "Pending Prepayment"]
         dateOfBirth:
           type: string
           format: date
@@ -706,22 +688,25 @@ components:
         tin:
           type: string
           maxLength: 40
-          description: Maps to EORI Number.
         priceGroup:
           type: string
           maxLength: 10
         Agent_Kebele:
-          type: string
-          maxLength: 2048
+          type: file
+          description: >
+            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.          
         Agent_Contact_Information:
-          type: string
-          maxLength: 2048
+          type: file
+          description: >
+            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.          
         Standby_Person:
-          type: string
-          maxLength: 2048
+          type: file
+          description: >
+            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.          
         Agreement:
-          type: string
-          maxLength: 2048
+          type: file
+          description: >
+            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.          
 
     CustomerCreate:
       type: object
@@ -746,23 +731,25 @@ components:
         alternativePhoneNo:
           type: string
           maxLength: 30
-          description: Maps to Mobile Phone No.; same auto-format applied.
         alternativePhoneNo2:
           type: string
           maxLength: 30
         country:
           type: string
           maxLength: 10
+          description: Auto-populated from the post code lookup.          
         territory:
           type: string
           maxLength: 10
-          description: Unmatched values silently fall back to UNKNOWN, no error.
+          description: Auto-populated from the post code lookup.          
         city:
           type: string
           maxLength: 30
+          description: Auto-populated from the  post code lookup.          
         postCode:
           type: string
           maxLength: 20
+          description: Auto-populated from the  post code lookup.  
         addressOne:
           type: string
           maxLength: 100
@@ -778,30 +765,28 @@ components:
         tin:
           type: string
           maxLength: 40
-          description: EORI Number.
         priceGroup:
           type: string
-          enum: [AGENT, DEALER, AGENT-DEAL]
+          option: [AGENT, DEALER, AGENT-DEAL]
           description: >
             MANDATORY. Anything else throws "Invalid Price Group %1.
-            Expected AGENT or DEALER." Ignored entirely on the Dealer
-            creation endpoint (always fixed to DEALER internally).
+            Expected AGENT or DEALER."
         Agent_Kebele:
-          type: string
-          maxLength: 2048
+          type: file
           description: >
-            Present on the page but not wired into the create logic in
-            the version reviewed — confirm with the BC developer whether
-            this persists.
+            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.
         Agent_Contact_Information:
-          type: string
-          maxLength: 2048
+          type: file
+          description: >
+            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.          
         Standby_Person:
-          type: string
-          maxLength: 2048
+          type: file
+          description: >
+            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.          
         Agreement:
-          type: string
-          maxLength: 2048
+          type: file
+          description: >
+            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.          
 
     # ---- Products & Pricing ----
     Product:
@@ -810,11 +795,9 @@ components:
         priceGroup:
           type: string
           maxLength: 20
-          description: Price List "Assign-to No."
         productNo:
           type: string
           maxLength: 20
-          description: Price List Line "Asset No."
         name:
           type: string
           maxLength: 100
@@ -825,9 +808,6 @@ components:
           type: number
           format: double
           readOnly: true
-          description: >
-            System-calculated (Unit_Price_Including_VAT): unit price plus
-            VAT, computed from the item's VAT posting group.
         currencyCode:
           type: string
           maxLength: 10
@@ -908,9 +888,6 @@ components:
         salesPersonCode:
           type: string
           maxLength: 20
-          description: >
-            MANDATORY. "Salesperson Code must be selected." is thrown on
-            modify if blank.
         addressOne:
           type: string
           maxLength: 100
@@ -976,7 +953,6 @@ components:
           type: string
           enum: [Normal, "Package Sale"]
           readOnly: true
-          description: System-derived from line items' product type.
         status:
           type: string
           enum: [Open, Released, "Pending Approval", "Pending Prepayment"]
@@ -1063,7 +1039,7 @@ components:
         customerNo:
           type: string
           maxLength: 20
-          description: Maps to Account No.
+          description: Maps to Customer No.
         amount:
           type: number
           format: double
