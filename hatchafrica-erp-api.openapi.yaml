@@ -3,21 +3,13 @@ info:
   title: Hatchafrica – Business Central API
   description: >
     Integration API on top of Microsoft Dynamics 365 Business Central for
-    AGP Poultry PLC (Ethiopia). Covers customers, products/pricing, sales
-    quotes, sales orders, payments, and reference/lookup data.
-
-
-    Field types, lengths, and mandatory flags were sourced directly from the
-    compiled `OrderingAppAPI_BPIT_1.0.0.53` extension (Base Application +
-    ADV/BPIT dependency apps), not just the sample Postman payloads.
+    AGP Poultry PLC (Ethiopia).
   version: "1.0.0.1"
   contact:
     name: Hatch Africa Enterprise Technology
 externalDocs:
-  description: Full developer reference (field-by-field notes, discrepancy list)
-  url: https://internal-docs.example.com/ethiochicken-agp-api
 
-servers:
+Base URL:
   - url: https://api.businesscentral.dynamics.com/v2.0/{TENAT_ID}/{Environment}
     description: >
       The Tenant ID and the Environement Name is provided in separate document. Including the client credential.
@@ -39,7 +31,7 @@ paths:
   # ---------------------------------------------------------------
   # 1. Companies (custom REST API)
   # ---------------------------------------------------------------
-  /api/ech/echgroup/v1.0/companies:
+  {{baseUrl}}/api/ech/echgroup/v1.0/companies:
     get:
       tags: [Companies]
       summary: List companies accessible to this app registration
@@ -66,7 +58,7 @@ paths:
   # ---------------------------------------------------------------
   # 2. Customers
   # ---------------------------------------------------------------
-  "/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/customers":
+  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/customers":
     get:
       tags: [Customers]
       summary: List customers, or a single customer via $filter
@@ -92,7 +84,7 @@ paths:
                     items:
                       $ref: "#/components/schemas/Customer"
 
-  "/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/createCustomerAgent":
+  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/createCustomerAgent":
     post:
       tags: [Customers]
       summary: Create a customer (Agent)
@@ -131,7 +123,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Customer"
 
-  "/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/createCustomerAgent('{customerNo}')":
+  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/createCustomerAgent('{customerNo}')":
     patch:
       tags: [Customers]
       summary: Update a customer
@@ -164,7 +156,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Customer"
 
-  "/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/createCustomerDealer":
+  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/createCustomerDealer":
     post:
       tags: [Customers]
       summary: Create a customer (Dealer)
@@ -203,7 +195,7 @@ paths:
   # ---------------------------------------------------------------
   # 3. Products & Pricing
   # ---------------------------------------------------------------
-  "/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/products":
+  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/products":
     get:
       tags: [Products]
       summary: List products, or a single product via $filter
@@ -228,7 +220,7 @@ paths:
                     items:
                       $ref: "#/components/schemas/Product"
 
-  "/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/productPrices":
+  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/productPrices":
     get:
       tags: [Products]
       summary: List product prices
@@ -249,7 +241,7 @@ paths:
   # ---------------------------------------------------------------
   # 4. Sales Quotes (custom REST API)
   # ---------------------------------------------------------------
-  /api/ech/echgroup/v1.0/salesQuotes:
+  {{baseUrl}}/api/ech/echgroup/v1.0/salesQuotes:
     get:
       tags: [Sales Quotes]
       summary: List sales quotes
@@ -301,7 +293,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/SalesQuote"
 
-  "/api/ech/echgroup/v1.0/salesQuotes('{quoteNo}')":
+  "{{baseUrl}}/api/ech/echgroup/v1.0/salesQuotes('{quoteNo}')":
     get:
       tags: [Sales Quotes]
       summary: Get a single sales quote
@@ -339,7 +331,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/SalesQuote"
 
-  "/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/salesQuotes('{quoteNo}')":
+  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/salesQuotes('{quoteNo}')":
     patch:
       tags: [Sales Quotes]
       summary: Unblock a sales quote
@@ -374,7 +366,7 @@ paths:
   # ---------------------------------------------------------------
   # 5. Sales Orders (custom REST API)
   # ---------------------------------------------------------------
-  "/api/ech/echgroup/v1.0/salesOrders('{orderNo}')":
+  "{{baseUrl}}/api/ech/echgroup/v1.0/salesOrders('{orderNo}')":
     get:
       tags: [Sales Orders]
       summary: Get a single sales order
@@ -441,7 +433,7 @@ paths:
   # ---------------------------------------------------------------
   # 6. Payments
   # ---------------------------------------------------------------
-  "/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/createPayment":
+  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/createPayment":
     post:
       tags: [Payments]
       summary: Create a payment
@@ -476,7 +468,7 @@ paths:
   # ---------------------------------------------------------------
   # 7. Reference / lookup data (all read-only)
   # ---------------------------------------------------------------
-  "/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/bankDetails":
+  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/bankDetails":
     get:
       tags: [Reference Data]
       summary: List bank details
@@ -494,7 +486,7 @@ paths:
                     items:
                       $ref: "#/components/schemas/BankDetail"
 
-  "/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/salesPerson":
+  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/salesPerson":
     get:
       tags: [Reference Data]
       summary: List sales persons, or a single one via $filter
@@ -519,7 +511,7 @@ paths:
                     items:
                       $ref: "#/components/schemas/SalesPerson"
 
-  "/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/getGeography":
+  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/getGeography":
     get:
       tags: [Reference Data]
       summary: List geography reference data (post codes, territories, etc.)
@@ -537,7 +529,7 @@ paths:
                     items:
                       $ref: "#/components/schemas/Geography"
 
-  "/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/getSalesShipment":
+  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/getSalesShipment":
     get:
       tags: [Reference Data]
       summary: List sales shipments
@@ -555,7 +547,7 @@ paths:
                     items:
                       type: object
 
-  "/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/getBankLedger":
+  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/getBankLedger":
     get:
       tags: [Reference Data]
       summary: List bank ledger entries
@@ -573,7 +565,7 @@ paths:
                     items:
                       type: object
 
-  "/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/OrdersandItems":
+  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/OrdersandItems":
     get:
       tags: [Reference Data]
       summary: List sales orders joined with their item lines
@@ -591,7 +583,7 @@ paths:
                     items:
                       type: object
 
-  "/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/salesQuoteandItems":
+  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/salesQuoteandItems":
     get:
       tags: [Reference Data]
       summary: List sales quotes joined with their item lines
@@ -616,16 +608,10 @@ components:
       type: oauth2
       description: >
         Azure AD OAuth 2.0 client credentials flow.
-        Token endpoint: https://login.microsoftonline.com/535aeb8f-6de7-494c-b5dc-69fc6eef1568/oauth2/v2.0/token
+        Token endpoint: https://login.microsoftonline.com/{TENANT_ID}/oauth2/v2.0/token
       flows:
         clientCredentials:
-          tokenUrl: https://login.microsoftonline.com/535aeb8f-6de7-494c-b5dc-69fc6eef1568/oauth2/v2.0/token
-          scopes:
-            https://api.businesscentral.dynamics.com/.default: >
-              Full access as granted to the app registration
-              (API.ReadWrite.All, Automation.ReadWrite.All,
-              AdminCenter.ReadWrite.All, app_access — scope down per
-              integration where possible)
+          tokenUrl: https://login.microsoftonline.com/{TENANT_ID}/oauth2/v2.0/token
 
   parameters:
     CompanyParam:
