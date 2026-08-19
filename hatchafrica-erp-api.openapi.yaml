@@ -8,7 +8,7 @@ info:
   contact:
     name: Hatch Africa Enterprise Technology
 externalDocs:
-  description: 
+  description: Hatch Africa
   url:
 baseUrl:
   - url: https://api.businesscentral.dynamics.com/v2.0/{TENAT_ID}/{Environment}
