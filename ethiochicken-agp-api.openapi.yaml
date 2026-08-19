@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Ethiochicken – Business Central API (AGP)
+  title: Hatchafrica – Business Central API
   description: >
     Integration API on top of Microsoft Dynamics 365 Business Central for
     AGP Poultry PLC (Ethiopia). Covers customers, products/pricing, sales
@@ -19,18 +19,15 @@ info:
     building a client against this spec.
   version: "1.0.53"
   contact:
-    name: Ethiochicken / Hatch Africa Enterprise Technology
+    name: Hatch Africa Enterprise Technology
 externalDocs:
   description: Full developer reference (field-by-field notes, discrepancy list)
   url: https://internal-docs.example.com/ethiochicken-agp-api
 
 servers:
-  - url: https://api.businesscentral.dynamics.com/v2.0/535aeb8f-6de7-494c-b5dc-69fc6eef1568/TEST
+  - url: https://api.businesscentral.dynamics.com/v2.0/{TENAT_ID}/{Environment}
     description: >
-      TEST environment, tenant 535aeb8f-6de7-494c-b5dc-69fc6eef1568.
-      Confirm with your BC admin that TEST is the correct/live environment
-      before pointing production traffic at it — the original Postman
-      collection used a mix of Sandbox/TEST/Test/test/upgrade-26.
+      The Tenant ID and the Environement Name is provided in separate document. Including the client credential.
 
 security:
   - oauth2ClientCredentials: []
