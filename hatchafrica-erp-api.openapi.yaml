@@ -696,8 +696,8 @@ components:
           type: String
           maxLength: 2048          
         Agent_Contact_Information:
-         type: String
-          maxLength: 2048          
+          type: String
+          maxLength: 2048           
         Standby_Person:
           type: String
           maxLength: 2048          
