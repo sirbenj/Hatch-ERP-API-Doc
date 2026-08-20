@@ -770,16 +770,16 @@ components:
             Expected AGENT or DEALER."
         Agent_Kebele:
           type: String
-          maxLength: 2048          
+          maxLength: 200         
         Agent_Contact_Information:
          type: String
-          maxLength: 2048          
+          maxLength: 200         
         Standby_Person:
           type: String
-          maxLength: 2048          
+          maxLength: 200          
         Agreement:
           type: String
-          maxLength: 2048      
+          maxLength: 200      
 
     # ---- Products & Pricing ----
     Product:
