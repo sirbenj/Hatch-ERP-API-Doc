@@ -693,17 +693,21 @@ components:
           type: string
           maxLength: 10
         Agent_Kebele:
-          type: String
-          maxLength: 2048          
+          type: file
+          description: >
+            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.          
         Agent_Contact_Information:
-          type: String
-          maxLength: 2048           
+          type: file
+          description: >
+            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.           
         Standby_Person:
-          type: String
-          maxLength: 2048          
+          type: file
+          description: >
+            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.         
         Agreement:
-          type: String
-          maxLength: 2048            
+          type: file
+          description: >
+            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.           
 
     CustomerCreate:
       type: object
@@ -769,17 +773,21 @@ components:
             MANDATORY. Anything else throws "Invalid Price Group %1.
             Expected AGENT or DEALER."
         Agent_Kebele:
-          type: String
-          maxLength: 200         
+         type: file
+          description: >
+            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.         
         Agent_Contact_Information:
-          type: String
-          maxLength: 200         
+         type: file
+          description: >
+            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.        
         Standby_Person:
-          type: String
-          maxLength: 200          
+          type: file
+          description: >
+            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.          
         Agreement:
-          type: String
-          maxLength: 200      
+          type: file
+          description: >
+            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.     
 
     # ---- Products & Pricing ----
     Product:
