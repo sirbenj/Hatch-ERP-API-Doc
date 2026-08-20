@@ -773,11 +773,11 @@ components:
             MANDATORY. Anything else throws "Invalid Price Group %1.
             Expected AGENT or DEALER."
         Agent_Kebele:
-         type: file
+          type: file
           description: >
             Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.         
         Agent_Contact_Information:
-         type: file
+          type: file
           description: >
             Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.        
         Standby_Person:
