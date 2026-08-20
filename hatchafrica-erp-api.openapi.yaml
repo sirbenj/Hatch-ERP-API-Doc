@@ -772,7 +772,7 @@ components:
           type: String
           maxLength: 200         
         Agent_Contact_Information:
-         type: String
+          type: String
           maxLength: 200         
         Standby_Person:
           type: String
