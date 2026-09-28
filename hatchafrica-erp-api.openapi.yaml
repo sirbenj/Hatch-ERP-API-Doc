@@ -142,28 +142,28 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/CustomerCreate"
-              example:
-            companyName: "AGP Poultry PLC (Ethiopia)"
-            companyId: "12345678-abcd-ef01-2345-6789abcdef01"
-            customerNo: "AGP-A00001"
-            name: "Eusubalewu Amenu"
-            salesPersonCode: "YA001"
-            phoneNumber: "+251936934945"
-            phoneNumber2: ""
-            alternativePhoneNo: ""
-            alternativePhoneNo2: ""
-            country: "ET"
-            territory: "SERS"
-            city: "Gedeo"
-            postCode: "DILLA ZURIA"
-            addressOne: "Dilla Zuriya"
-            addressTwo: "Dilla Zuria"
-            balance: 0
-            status: "Open"
-            dateOfBirth: "1999-10-12"
-            gender: "Male"
-            tin: ""
-            priceGroup: "AGENT"
+            example:
+              companyName: "AGP Poultry PLC (Ethiopia)"
+              companyId: "12345678-abcd-ef01-2345-6789abcdef01"
+              customerNo: "AGP-A00001"
+              name: "Eusubalewu Amenu"
+              salesPersonCode: "YA001"
+              phoneNumber: "+251936934945"
+              phoneNumber2: ""
+              alternativePhoneNo: ""
+              alternativePhoneNo2: ""
+              country: "ET"
+              territory: "SERS"
+              city: "Gedeo"
+              postCode: "DILLA ZURIA"
+              addressOne: "Dilla Zuriya"
+              addressTwo: "Dilla Zuria"
+              balance: 0
+              status: "Open"
+              dateOfBirth: "1999-10-12"
+              gender: "Male"
+              tin: ""
+              priceGroup: "AGENT"
       responses:
         "200":
           description: OK
