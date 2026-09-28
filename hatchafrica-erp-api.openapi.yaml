@@ -736,7 +736,7 @@ components:
       required:
         - priceGroup
       properties:
-      companyName:
+        companyName:
           type: string
           description: Name of the company in Business Central.
         companyId:
