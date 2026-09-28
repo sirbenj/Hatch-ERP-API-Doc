@@ -714,6 +714,13 @@ components:
       required:
         - priceGroup
       properties:
+      companyName:
+          type: string
+          description: Name of the company in Business Central.
+        companyId:
+          type: string
+          format: uuid
+          description: System ID (GUID) of the company.
         name:
           type: string
           maxLength: 100
