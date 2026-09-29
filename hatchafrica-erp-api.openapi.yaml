@@ -927,7 +927,7 @@ components:
         productNo:
           type: string
           maxLength: 20
-          description: Item "No." from Business Central.
+          description: Item "No." from Business Central (Asset No.).
         name:
           type: string
           maxLength: 100
@@ -936,16 +936,17 @@ components:
           type: string
           maxLength: 20
           description: General Product Posting Group.
-        Unitmeasurement:
+        unitOfMeasure:
           type: string
           maxLength: 10
-          description: Base Unit of Measure.
+          description: Base Unit of Measure / Unit of Measure Code.
         ActionType:
           type: string
           description: Action triggered (e.g., Insert, Modify, Delete).
 
     PriceListLineNotification:
       type: object
+      description: Represents a price list line for a product with all pricing and location details.
       properties:
         companyName:
           type: string
@@ -957,22 +958,50 @@ components:
         productNo:
           type: string
           maxLength: 20
-          description: Item "No." from Business Central.
+          description: The asset or product number (Asset No.).
+        name:
+          type: string
+          maxLength: 100
+          description: Product/Item description.
         unitPrice:
           type: number
           format: double
-          description: Updated unit price.
-        priceGroup:
+          description: Unit price including VAT (Unit_Price_Including_VAT).
+        unitOfMeasure:
           type: string
-          description: Price group for the product.
+          maxLength: 10
+          description: Unit of Measure Code for the product.
+        currencyCode:
+          type: string
+          maxLength: 10
+          description: Currency Code for the price.
         startDate:
           type: string
           format: date
-          description: Start date for this price.
+          description: Starting Date of the price validity.
         endDate:
           type: string
           format: date
-          description: End date for this price.
+          description: Ending Date of the price validity.
+        type:
+          type: string
+          maxLength: 20
+          description: General Product Posting Group type.
+        status:
+          type: boolean
+          description: Status indicator (blocked status indicator).
+        priceGroup:
+          type: string
+          maxLength: 20
+          description: Price Group / Assign-to No. (customer price group).
+        locationCode:
+          type: string
+          maxLength: 10
+          description: Location Code for inventory/warehouse.
+        ActionType:
+          type: string
+          enum: [Insert, Modify, Delete]
+          description: Action Type indicating what operation triggered this notification.
 
     SalesQuote:
       type: object
