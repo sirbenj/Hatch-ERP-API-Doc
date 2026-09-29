@@ -654,8 +654,6 @@ components:
           type: string
           maxLength: 20
           readOnly: true
-        companyName: "AGP Poultry PLC (Ethiopia)"
-        companyId: "12345678-abcd-ef01-2345-6789abcdef01"
         name:
           type: string
           maxLength: 100
