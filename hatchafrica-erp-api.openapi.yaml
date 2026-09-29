@@ -258,10 +258,10 @@ paths:
         parameters:
          - name: productNo
           in: path
-           required: true
-           schema:
-           type: string
-           maxLength: 20
+          required: true
+          schema:
+          type: string
+          maxLength: 20
         description: The asset or product number to update prices for.
     requestBody:
       required: true
