@@ -233,51 +233,46 @@ paths:
                     items:
                       $ref: "#/components/schemas/Product"
 
-  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/productPrices":
+ "{{baseUrl}}/api/ech/echgroup/v1.0/salesQuotes('{quoteNo}')":
     get:
-      tags: [Products]
-      summary: List product prices
-      operationId: listProductPrices
+      tags:
+        - Sales Quotes
+      summary: Get a single sales quote
+      operationId: getSalesQuote
+      parameters:
+        - $ref: "#/components/parameters/QuoteNoPathParam"
+        - $ref: "#/components/parameters/CompanyParam"
+        - $ref: "#/components/parameters/ExpandLinesParam"
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  value:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/Product"
-
-  "{{baseUrl}}/api/ech/echgroup/v1.0/Product('{productNo}')":
+                $ref: "#/components/schemas/SalesQuote"
     patch:
-      tags: [Product Prices]
-      summary: Update a product price line
-      operationId: updateProductPrice
+      tags:
+        - Sales Quotes
+      summary: Update a sales quote
+      operationId: updateSalesQuote
       parameters:
-        - name: productNo
-          in: path
-          required: true
-          schema:
-            type: string
-            maxLength: 20
-          description: The asset or product number to update prices for.
+        - $ref: "#/components/parameters/QuoteNoPathParam"
+        - $ref: "#/components/parameters/CompanyParam"
+        - $ref: "#/components/parameters/ExpandLinesParam"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/PriceListLineNotification"
+              $ref: "#/components/schemas/SalesQuoteUpdate"
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PriceListLineNotification"
-  # ---------------------------------------------------------------
+                $ref: "#/components/schemas/SalesQuote"
+                # ---------------------------------------------------------------
   # 4. Sales Quotes (custom REST API)
   # ---------------------------------------------------------------
 "{{baseUrl}}/api/ech/echgroup/v1.0/salesQuotes":
