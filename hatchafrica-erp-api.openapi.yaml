@@ -382,13 +382,13 @@ paths:
               deliveryStatusAndPlate:
                 summary: Update delivery status / plate number
                 value:
-                  deliveryStatus: ASM: Customer ready to receive
+                  deliveryStatus: "ASM: Customer ready to receive"
                   PlateNo: "12314"
               deliveryDateAndStatus:
                 summary: Update requested delivery date & status
                 value:
                   requestedDeliveryDate: "2025-02-28"
-                  deliveryStatus: ASM: Not Ready for Delivery
+                  deliveryStatus: "ASM: Not Ready for Delivery"
       responses:
         '200':
           description: OK
@@ -646,7 +646,7 @@ components:
           type: string
           maxLength: 20
           readOnly: true
-          enum: [Open, Released, Pending Approval, Pending Prepayment]
+          enum: [Open, Released, "Pending Approval", "Pending Prepayment"]
         dateOfBirth:
           type: string
           format: date
@@ -731,7 +731,7 @@ components:
           type: string
           maxLength: 20
           readOnly: true
-          enum: [Open, Released, Pending Approval, Pending Prepayment]
+          enum: [Open, Released, "Pending Approval", "Pending Prepayment"]
         dateOfBirth:
           type: string
           format: date
