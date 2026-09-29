@@ -254,15 +254,15 @@ paths:
      patch:
        tags: [Product Prices]
        summary: Update a product price line
-        operationId: updateProductPrice
-        parameters:
-         - name: productNo
-          in: path
-          required: true
-          schema:
-          type: string
-          maxLength: 20
-        description: The asset or product number to update prices for.
+       operationId: updateProductPrice
+       parameters:
+        - name: productNo
+        in: path
+        required: true
+        schema:
+         type: string
+         maxLength: 20
+     description: The asset or product number to update prices for.
     requestBody:
       required: true
       content:
