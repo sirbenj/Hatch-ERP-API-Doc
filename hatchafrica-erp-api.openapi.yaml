@@ -250,25 +250,25 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/Product"
-      "{{baseUrl}}/api/ech/echgroup/v1.0/Product('{ProductNo}')": 
-         patch:
-            tags: [Product Prices]
-            summary: Update a product price line
-            operationId: updateProductPrice
-            parameters:
-             - name: productNo
-               in: path
-              required: true
-              schema:
-                 type: string
-                 maxLength: 20
-              description: The asset or product number to update prices for.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/PriceListLineNotification"
+  "{{baseUrl}}/api/ech/echgroup/v1.0/Product('{ProductNo}')": 
+     patch:
+       tags: [Product Prices]
+       summary: Update a product price line
+        operationId: updateProductPrice
+        parameters:
+         - name: productNo
+          in: path
+           required: true
+           schema:
+           type: string
+           maxLength: 20
+        description: The asset or product number to update prices for.
+    requestBody:
+      required: true
+      content:
+      application/json:
+      schema:
+            $ref: "#/components/schemas/PriceListLineNotification"
       responses:
         "200":
           description: OK
