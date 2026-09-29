@@ -332,44 +332,43 @@ paths:
               schema:
                 $ref: "#/components/schemas/SalesQuote"
 
-  "{{baseUrl}}/api/ech/echgroup/v1.0/salesQuotes('{quoteNo}')":
-    get:
-      tags: [Sales Quotes]
-      summary: Get a single sales quote
-      operationId: getSalesQuote
-      parameters:
-        - $ref: "#/components/parameters/QuoteNoPathParam"
-        - $ref: "#/components/parameters/CompanyParam"
-        - $ref: "#/components/parameters/ExpandLinesParam"
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SalesQuote"
-    patch:
-      tags: [Sales Quotes]
-      summary: Update a sales quote
-      operationId: updateSalesQuote
-      parameters:
-        - $ref: "#/components/parameters/QuoteNoPathParam"
-        - $ref: "#/components/parameters/CompanyParam"
-        - $ref: "#/components/parameters/ExpandLinesParam"
-      requestBody:
-        required: true
+ "{{baseUrl}}/api/ech/echgroup/v1.0/salesQuotes('{quoteNo}')":
+  get:
+    tags: [Sales Quotes]
+    summary: Get a single sales quote
+    operationId: getSalesQuote
+    parameters:
+      - $ref: "#/components/parameters/QuoteNoPathParam"
+      - $ref: "#/components/parameters/CompanyParam"
+      - $ref: "#/components/parameters/ExpandLinesParam"
+    responses:
+      "200":
+        description: OK
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/SalesQuoteUpdate"
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SalesQuote"
-
+              $ref: "#/components/schemas/SalesQuote"
+  patch:
+    tags: [Sales Quotes]
+    summary: Update a sales quote
+    operationId: updateSalesQuote
+    parameters:
+      - $ref: "#/components/parameters/QuoteNoPathParam"
+      - $ref: "#/components/parameters/CompanyParam"
+      - $ref: "#/components/parameters/ExpandLinesParam"
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/SalesQuoteUpdate"
+    responses:
+      "200":
+        description: OK
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SalesQuote"
   "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/salesQuotes('{quoteNo}')":
     patch:
       tags: [Sales Quotes]
