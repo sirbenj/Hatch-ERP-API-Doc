@@ -250,6 +250,34 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/Product"
+      "{{baseUrl}}/api/ech/echgroup/v1.0/Product('{ProductNo}')": 
+         patch:
+            tags: [Product Prices]
+            summary: Update a product price line
+            operationId: updateProductPrice
+            parameters:
+             - name: productNo
+               in: path
+              required: true
+              schema:
+                 type: string
+                 maxLength: 20
+              description: The asset or product number to update prices for.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PriceListLineNotification"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PriceListLineNotification"
+           
+         
 
   # ---------------------------------------------------------------
   # 4. Sales Quotes (custom REST API)
@@ -964,7 +992,100 @@ components:
           type: number
           format: double
           readOnly: true
-
+ProductNotification:
+    type: object
+      required:
+        - productNo
+        - name
+        - type
+        - Unitmeasurement
+      properties:
+        companyName:
+          type: string
+          description: Name of the company in Business Central.
+        companyId:
+          type: string
+          format: uuid
+          description: System ID (GUID) of the company.
+        productNo:
+          type: string
+          maxLength: 20
+          description: Item "No." from Business Central.
+         name:
+          type: string
+          maxLength: 100
+          description: Item Description.
+        type:
+          type: string
+          maxLength: 20
+          description: General Product Posting Group.
+        Unitmeasurement:
+          type: string
+          maxLength: 10
+          description: Base Unit of Measure.
+        ActionType:
+          type: string
+          description: Action triggered (e.g., Insert, Modify, Delete).
+  PriceListLineNotification:
+    type: object
+      required:
+        - productNo
+        - unitPrice
+      properties:
+        companyName:
+          type: string
+          description: Name of the company in Business Central.
+        companyId:
+          type: string
+          format: uuid
+          description: System ID (GUID) of the company.
+        productNo:
+          type: string
+          maxLength: 20
+          description: PriceListLine."Asset No."
+        unitPrice:
+          type: number
+          format: double
+          description: Unit Price Including VAT.
+        unitOfMeasure:
+          type: string
+          maxLength: 10
+          description: Unit of Measure Code.
+        currencyCode:
+          type: string
+          maxLength: 10
+          description: Currency Code.
+        startDate:
+          type: string
+          format: date
+          description: Starting Date.
+        endDate:
+          type: string
+          format: date
+          description: Ending Date.
+        type:
+          type: string
+          maxLength: 20
+          description: Line or asset type.
+        name:
+          type: string
+          maxLength: 100
+          description: PriceListLine.Description.
+        status:
+          type: boolean
+          description: Active or inactive status.
+        priceGroup:
+          type: string
+          maxLength: 20
+          description: PriceListHeader."Assign-to No." (e.g., AGENT or DEALER code).
+        locationCode:
+          type: string
+          maxLength: 10
+          description: Location Code.
+        ActionType:
+          type: string
+          description: Action triggered (Insert, Modify, Delete).
+          
     # ---- Sales Quotes / Orders ----
     SalesQuoteLine:
       type: object
