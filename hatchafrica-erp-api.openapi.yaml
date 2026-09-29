@@ -732,13 +732,6 @@ components:
           type: file
           description: >
             Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.
-        companyName:
-          type: string
-          description: Name of the companies.
-        companyId:
-          type: string
-          format: uuid
-          description: System ID (GUID) of the company.
         Agreement:
           type: file
           description: >
@@ -916,13 +909,6 @@ components:
           type: file
           description: >
             Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx. 
-        companyName:
-          type: string
-          description: Name of the company in Business Central.
-        companyId:
-          type: string
-          format: uuid
-          description: System ID (GUID) of the company.
         Agreement:
           type: file
           description: >
