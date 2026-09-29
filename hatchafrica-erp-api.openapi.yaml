@@ -250,7 +250,8 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/Product"
-"{{baseUrl}}/api/ech/echgroup/v1.0/Product('{productNo}')":
+
+  "{{baseUrl}}/api/ech/echgroup/v1.0/Product('{productNo}')":
     patch:
       tags: [Product Prices]
       summary: Update a product price line
@@ -275,8 +276,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PriceListLineNotification"         
-
+                $ref: "#/components/schemas/PriceListLineNotification"
   # ---------------------------------------------------------------
   # 4. Sales Quotes (custom REST API)
   # ---------------------------------------------------------------
