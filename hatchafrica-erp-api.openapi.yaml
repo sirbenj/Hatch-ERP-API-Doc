@@ -233,49 +233,56 @@ paths:
                     items:
                       $ref: "#/components/schemas/Product"
 
- "{{baseUrl}}/api/ech/echgroup/v1.0/salesQuotes('{quoteNo}')":
+  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/productPrices":
     get:
-      tags:
-        - Sales Quotes
-      summary: Get a single sales quote
-      operationId: getSalesQuote
-      parameters:
-        - $ref: "#/components/parameters/QuoteNoPathParam"
-        - $ref: "#/components/parameters/CompanyParam"
-        - $ref: "#/components/parameters/ExpandLinesParam"
+      tags: [Products]
+      summary: List product prices
+      operationId: listProductPrices
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SalesQuote"
-    patch:
-      tags:
-        - Sales Quotes
-      summary: Update a sales quote
-      operationId: updateSalesQuote
-      parameters:
-        - $ref: "#/components/parameters/QuoteNoPathParam"
-        - $ref: "#/components/parameters/CompanyParam"
-        - $ref: "#/components/parameters/ExpandLinesParam"
+                type: object
+                properties:
+                  value:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Product"
+      "{{baseUrl}}/api/ech/echgroup/v1.0/Product('{ProductNo}')": 
+         patch:
+            tags: [Product Prices]
+            summary: Update a product price line
+            operationId: updateProductPrice
+            parameters:
+             - name: productNo
+               in: path
+              required: true
+              schema:
+                 type: string
+                 maxLength: 20
+              description: The asset or product number to update prices for.
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/SalesQuoteUpdate"
+              $ref: "#/components/schemas/PriceListLineNotification"
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SalesQuote"
-                # ---------------------------------------------------------------
+                $ref: "#/components/schemas/PriceListLineNotification"
+           
+         
+
+  # ---------------------------------------------------------------
   # 4. Sales Quotes (custom REST API)
   # ---------------------------------------------------------------
-"{{baseUrl}}/api/ech/echgroup/v1.0/salesQuotes":
+  "{{baseUrl}}/api/ech/echgroup/v1.0/salesQuotes":
     get:
       tags: [Sales Quotes]
       summary: List sales quotes
@@ -327,43 +334,44 @@ paths:
               schema:
                 $ref: "#/components/schemas/SalesQuote"
 
- "{{baseUrl}}/api/ech/echgroup/v1.0/salesQuotes('{quoteNo}')":
-  get:
-    tags: [Sales Quotes]
-    summary: Get a single sales quote
-    operationId: getSalesQuote
-    parameters:
-      - $ref: "#/components/parameters/QuoteNoPathParam"
-      - $ref: "#/components/parameters/CompanyParam"
-      - $ref: "#/components/parameters/ExpandLinesParam"
-    responses:
-      "200":
-        description: OK
+  "{{baseUrl}}/api/ech/echgroup/v1.0/salesQuotes('{quoteNo}')":
+    get:
+      tags: [Sales Quotes]
+      summary: Get a single sales quote
+      operationId: getSalesQuote
+      parameters:
+        - $ref: "#/components/parameters/QuoteNoPathParam"
+        - $ref: "#/components/parameters/CompanyParam"
+        - $ref: "#/components/parameters/ExpandLinesParam"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SalesQuote"
+    patch:
+      tags: [Sales Quotes]
+      summary: Update a sales quote
+      operationId: updateSalesQuote
+      parameters:
+        - $ref: "#/components/parameters/QuoteNoPathParam"
+        - $ref: "#/components/parameters/CompanyParam"
+        - $ref: "#/components/parameters/ExpandLinesParam"
+      requestBody:
+        required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/SalesQuote"
-  patch:
-    tags: [Sales Quotes]
-    summary: Update a sales quote
-    operationId: updateSalesQuote
-    parameters:
-      - $ref: "#/components/parameters/QuoteNoPathParam"
-      - $ref: "#/components/parameters/CompanyParam"
-      - $ref: "#/components/parameters/ExpandLinesParam"
-    requestBody:
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/SalesQuoteUpdate"
-    responses:
-      "200":
-        description: OK
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/SalesQuote"
+              $ref: "#/components/schemas/SalesQuoteUpdate"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SalesQuote"
+
   "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/salesQuotes('{quoteNo}')":
     patch:
       tags: [Sales Quotes]
@@ -998,7 +1006,7 @@ ProductNotification:
           type: string
           maxLength: 20
           description: Item "No." from Business Central.
-        name:
+         name:
           type: string
           maxLength: 100
           description: Item Description.
