@@ -171,7 +171,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Customer"
+                $ref: "#/components/schemas/Customer Update"
 
   "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/createCustomerDealer":
     post:
@@ -742,7 +742,104 @@ components:
         Agreement:
           type: file
           description: >
+            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx. 
+            
+    Customer Update:
+      type: object
+      properties:
+        customerNo:
+          type: string
+          maxLength: 20
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        salesPersonCode:
+          type: string
+          maxLength: 20
+        phoneNumber:
+          type: string
+          maxLength: 30
+        phoneNumber2:
+          type: string
+          maxLength: 30
+        email:
+          type: string
+          format: email
+          maxLength: 80
+          description: Customer email address.
+        alternativePhoneNo:
+          type: string
+          maxLength: 30
+        alternativePhoneNo2:
+          type: string
+          maxLength: 30
+        country:
+          type: string
+          maxLength: 10
+          description: Auto-populated from the post code lookup.          
+        territory:
+          type: string
+          maxLength: 10
+          description: Auto-populated from the post code lookup.          
+        city:
+          type: string
+          maxLength: 30
+          description: Auto-populated from the post code lookup.          
+        postCode:
+          type: string
+          maxLength: 20
+          description: Auto-populated from the post code lookup.          
+        addressOne:
+          type: string
+          maxLength: 100
+        addressTwo:
+          type: string
+          maxLength: 50
+        balance:
+          type: number
+          format: double
+          readOnly: true
+        status:
+          type: string
+          maxLength: 20
+          readOnly: true
+          enum: [Open, Released, "Pending Approval", "Pending Prepayment"]
+        dateOfBirth:
+          type: string
+          format: date
+        gender:
+          type: string
+          enum: [Male, Female]
+        tin:
+          type: string
+          maxLength: 40
+        priceGroup:
+          type: string
+          maxLength: 10
+        Agent_Kebele:
+          type: file
+          description: >
+            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.          
+        Agent_Contact_Information:
+          type: file
+          description: >
             Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.           
+        Standby_Person:
+          type: file
+          description: >
+            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.
+        companyName:
+          type: string
+          description: Name of the companies.
+        companyId:
+          type: string
+          format: uuid
+          description: System ID (GUID) of the company.
+        Agreement:
+          type: file
+          description: >
+            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx. 
 
     CustomerCreate:
       type: object
