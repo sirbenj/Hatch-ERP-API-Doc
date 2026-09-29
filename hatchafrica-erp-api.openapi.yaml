@@ -979,7 +979,7 @@ ProductNotification:
           type: string
           maxLength: 20
           description: Item "No." from Business Central.
-         name:
+        name:
           type: string
           maxLength: 100
           description: Item Description.
