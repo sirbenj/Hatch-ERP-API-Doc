@@ -280,7 +280,7 @@ paths:
   # ---------------------------------------------------------------
   # 4. Sales Quotes (custom REST API)
   # ---------------------------------------------------------------
-  "{{baseUrl}}/api/ech/echgroup/v1.0/salesQuotes":
+"{{baseUrl}}/api/ech/echgroup/v1.0/salesQuotes":
     get:
       tags: [Sales Quotes]
       summary: List sales quotes
