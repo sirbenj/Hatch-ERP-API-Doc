@@ -239,6 +239,21 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PriceListLineNotification'
+            example:
+              companyName: AGP Poultry PLC (Ethiopia)
+              companyId: 12345678-abcd-ef01-2345-6789abcdef01
+              productNo: BSS001
+              name: Poultry Feed
+              unitPrice: 150.50
+              unitOfMeasure: PC
+              currencyCode: ETB
+              startDate: "2025-03-01"
+              endDate: "2025-12-31"
+              type: FEEDTYPE
+              status: false
+              priceGroup: AGENT
+              locationCode: MAIN
+              ActionType: Modify
       responses:
         '200':
           description: OK
@@ -329,6 +344,12 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/SalesQuoteUpdate'
+            example:
+              companyName: AGP Poultry PLC (Ethiopia)
+              companyId: 12345678-abcd-ef01-2345-6789abcdef01
+              customerNo: AGP-A00002
+              requestedDeliveryDate: "2024-12-21"
+              status: Open
       responses:
         '200':
           description: OK
@@ -351,6 +372,13 @@ paths:
             schema:
               type: object
               properties:
+                companyName:
+                  type: string
+                  description: Company name.
+                companyId:
+                  type: string
+                  format: uuid
+                  description: Company GUID.
                 'Plate No.':
                   type: string
                   maxLength: 30
@@ -360,7 +388,10 @@ paths:
                 blocked:
                   type: boolean
             example:
+              companyName: AGP Poultry PLC (Ethiopia)
+              companyId: 12345678-abcd-ef01-2345-6789abcdef01
               'Plate No.': "123764"
+              blocked: false
       responses:
         '200':
           description: OK
@@ -411,11 +442,15 @@ paths:
               deliveryStatusAndPlate:
                 summary: Update delivery status / plate number
                 value:
+                  companyName: AGP Poultry PLC (Ethiopia)
+                  companyId: 12345678-abcd-ef01-2345-6789abcdef01
                   deliveryStatus: "ASM: Customer ready to receive"
                   PlateNo: "12314"
               deliveryDateAndStatus:
                 summary: Update requested delivery date & status
                 value:
+                  companyName: AGP Poultry PLC (Ethiopia)
+                  companyId: 12345678-abcd-ef01-2345-6789abcdef01
                   requestedDeliveryDate: "2025-02-28"
                   deliveryStatus: "ASM: Not Ready for Delivery"
       responses:
@@ -1061,6 +1096,13 @@ components:
     SalesQuoteUpdate:
       type: object
       properties:
+        companyName:
+          type: string
+          description: Name of the company.
+        companyId:
+          type: string
+          format: uuid
+          description: System ID (GUID) of the company.
         customerNo:
           type: string
         requestedDeliveryDate:
@@ -1089,6 +1131,13 @@ components:
     SalesOrderUpdate:
       type: object
       properties:
+        companyName:
+          type: string
+          description: Name of the company.
+        companyId:
+          type: string
+          format: uuid
+          description: System ID (GUID) of the company.
         requestedDeliveryDate:
           type: string
           format: date
