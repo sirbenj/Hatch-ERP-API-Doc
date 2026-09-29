@@ -994,12 +994,7 @@ components:
           readOnly: true
 ProductNotification:
     type: object
-      required:
-        - productNo
-        - name
-        - type
-        - Unitmeasurement
-      properties:
+    properties:
         companyName:
           type: string
           description: Name of the company in Business Central.
@@ -1028,10 +1023,7 @@ ProductNotification:
           description: Action triggered (e.g., Insert, Modify, Delete).
   PriceListLineNotification:
     type: object
-      required:
-        - productNo
-        - unitPrice
-      properties:
+    properties:
         companyName:
           type: string
           description: Name of the company in Business Central.
