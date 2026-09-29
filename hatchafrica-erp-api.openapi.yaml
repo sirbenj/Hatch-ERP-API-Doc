@@ -2,22 +2,19 @@ openapi: 3.0.3
 info:
   title: Hatchafrica – Business Central API
   description: >
-    Integration API on top of Microsoft Dynamics 365 Business Central  for
+    Integration API on top of Microsoft Dynamics 365 Business Central for
     AGP Poultry PLC (Ethiopia).
   version: "1.0.0.1"
   contact:
     name: Hatch Africa Enterprise Technology
 externalDocs:
-  description: 
-  url:
+  description: ""
+  url: ""
 servers:
   - url: https://api.businesscentral.dynamics.com/v2.0/{TENAT_ID}/{Environment}
     description: >
-      The Tenant ID and the Environement Name is provided in separate document. Including the client credential.
-
-# security:
-#   - oauth2ClientCredentials: []
-
+      The Tenant ID and Environment Name are provided in a separate document,
+      along with the client credentials.
 tags:
   - name: Companies
   - name: Customers
@@ -28,18 +25,14 @@ tags:
   - name: Reference Data
 
 paths:
-
-  # ---------------------------------------------------------------
-  # 1. Companies (custom REST API)
-  # ---------------------------------------------------------------
-  "{{baseUrl}}/api/ech/echgroup/v1.0/companies":
+  /api/ech/echgroup/v1.0/companies:
     get:
       tags: [Companies]
       summary: List companies accessible to this app registration
       description: Tenant-wide; no company parameter needed.
       operationId: listCompanies
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -56,10 +49,7 @@ paths:
                         displayName:
                           type: string
 
-  # ---------------------------------------------------------------
-  # 2. Customers
-  # ---------------------------------------------------------------
-  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/customers":
+  /ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/customers:
     get:
       tags: [Customers]
       summary: List customers, or a single customer via $filter
@@ -73,7 +63,7 @@ paths:
             type: string
           example: "customerNo eq 'AGP-A00002'"
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -83,9 +73,9 @@ paths:
                   value:
                     type: array
                     items:
-                      $ref: "#/components/schemas/Customer"
+                      $ref: '#/components/schemas/Customer'
 
-  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/createCustomerAgent":
+  /ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/createCustomerAgent:
     post:
       tags: [Customers]
       summary: Create a customer (Agent)
@@ -93,40 +83,39 @@ paths:
         `customerNo` is system-generated (No. Series) — do not rely on any
         value you send. `priceGroup` is mandatory and must be exactly
         `AGENT`, `DEALER`, or `AGENT-DEAL`. Posting-group fields are
-        hard-coded to `LOCAL` regardless of input. 
+        hard-coded to `LOCAL` regardless of input.
       operationId: createCustomerAgent
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CustomerCreate"
+              $ref: '#/components/schemas/CustomerCreate'
             example:
-              name: "Eusubalewu Amenu"
-              salesPersonCode: "YA001"
+              name: Eusubalewu Amenu
+              salesPersonCode: YA001
               phoneNumber: "+251936934945"
               dateOfBirth: "1999-10-12"
-              gender: "Male"
-              addressOne: "Dilla Zuriya"
-              addressTwo: "Dilla Zuria"
-              city: "Gedeo"
-              country: "ET"
-              postCode: "DILLA ZURIA"
-              territory: "SERS"
-              priceGroup: "AGENT"
+              gender: Male
+              addressOne: Dilla Zuriya
+              addressTwo: Dilla Zuria
+              city: Gedeo
+              country: ET
+              postCode: DILLA ZURIA
+              territory: SERS
+              priceGroup: AGENT
       responses:
-        "201":
+        '201':
           description: Created
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Customer"
+                $ref: '#/components/schemas/Customer'
 
-  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/createCustomerAgent('{customerNo}')":
+  /ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/createCustomerAgent/{customerNo}:
     patch:
       tags: [Customers]
       summary: Update a customer
-      description: >
       operationId: updateCustomer
       parameters:
         - name: customerNo
@@ -135,80 +124,76 @@ paths:
           schema:
             type: string
             maxLength: 20
-          example: "AGP-A00001"
+          example: AGP-A00001
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CustomerCreate"
+              $ref: '#/components/schemas/CustomerUpdate'
             example:
-              customerNo: "AGP-A00001"
-              companyName: "AGP Poultry PLC (Ethiopia)"
-              companyId: "12345678-abcd-ef01-2345-6789abcdef01"
-              name: "Eusubalewu Amenu"
-              salesPersonCode: "YA001"
-              email: "eusubalewu@example.com"
+              customerNo: AGP-A00001
+              companyName: AGP Poultry PLC (Ethiopia)
+              companyId: 12345678-abcd-ef01-2345-6789abcdef01
+              name: Eusubalewu Amenu
+              salesPersonCode: YA001
+              email: eusubalewu@example.com
               phoneNumber: "+251936934945"
               phoneNumber2: ""
               alternativePhoneNo: ""
               alternativePhoneNo2: ""
-              country: "ET"
-              territory: "SERS"
-              city: "Gedeo"
-              postCode: "DILLA ZURIA"
-              addressOne: "Dilla Zuriya"
-              addressTwo: "Dilla Zuria"
+              country: ET
+              territory: SERS
+              city: Gedeo
+              postCode: DILLA ZURIA
+              addressOne: Dilla Zuriya
+              addressTwo: Dilla Zuria
               balance: 0
-              status: "Open"
+              status: Open
               dateOfBirth: "1999-10-12"
-              gender: "Male"
+              gender: Male
               tin: ""
-              priceGroup: "AGENT"
+              priceGroup: AGENT
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Customer Update"
+                $ref: '#/components/schemas/CustomerUpdate'
 
-  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/createCustomerDealer":
+  /ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/createCustomerDealer:
     post:
       tags: [Customers]
       summary: Create a customer (Dealer)
-      description: >
       operationId: createCustomerDealer
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CustomerCreate"
+              $ref: '#/components/schemas/CustomerCreate'
             example:
-              name: "Abdi hussein"
-              salesPersonCode: "AH001"
+              name: Abdi hussein
+              salesPersonCode: AH001
               phoneNumber: "+251915674330"
               dateOfBirth: "1987-08-11"
-              gender: "Male"
-              addressOne: "Gadullo"
-              addressTwo: "Gadullo"
-              city: "West Hararghe"
-              country: "ET"
-              postCode: "DAROLABU"
-              territory: "TIG"
+              gender: Male
+              addressOne: Gadullo
+              addressTwo: Gadullo
+              city: West Hararghe
+              country: ET
+              postCode: DAROLABU
+              territory: TIG
       responses:
-        "201":
+        '201':
           description: Created
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Customer"
+                $ref: '#/components/schemas/Customer'
 
-  # ---------------------------------------------------------------
-  # 3. Products & Pricing
-  # ---------------------------------------------------------------
-  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/products":
+  /ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/products:
     get:
       tags: [Products]
       summary: List products, or a single product via $filter
@@ -221,7 +206,7 @@ paths:
             type: string
           example: "productNo eq 'BSS001'"
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -231,40 +216,18 @@ paths:
                   value:
                     type: array
                     items:
-                      $ref: "#/components/schemas/Product"
+                      $ref: '#/components/schemas/Product'
 
-  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/productPrices":
-    get:
-      tags: [Products]
-      summary: List product prices
-      operationId: listProductPrices
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  value:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/Product"           
-         
-
-  # ---------------------------------------------------------------
-  # 4. Sales Quotes (custom REST API)
-  # ---------------------------------------------------------------
-  "{{baseUrl}}/api/ech/echgroup/v1.0/salesQuotes":
+  /api/ech/echgroup/v1.0/salesQuotes:
     get:
       tags: [Sales Quotes]
       summary: List sales quotes
       operationId: listSalesQuotes
       parameters:
-        - $ref: "#/components/parameters/CompanyParam"
-        - $ref: "#/components/parameters/ExpandLinesParam"
+        - $ref: '#/components/parameters/CompanyParam'
+        - $ref: '#/components/parameters/ExpandLinesParam'
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -274,85 +237,84 @@ paths:
                   value:
                     type: array
                     items:
-                      $ref: "#/components/schemas/SalesQuote"
+                      $ref: '#/components/schemas/SalesQuote'
     post:
       tags: [Sales Quotes]
       summary: Create a sales quote
       operationId: createSalesQuote
       parameters:
-        - $ref: "#/components/parameters/CompanyParam"
-        - $ref: "#/components/parameters/ExpandLinesParam"
+        - $ref: '#/components/parameters/CompanyParam'
+        - $ref: '#/components/parameters/ExpandLinesParam'
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/SalesQuoteCreate"
+              $ref: '#/components/schemas/SalesQuoteCreate'
             example:
-              customerNo: "AGP-A00002"
+              customerNo: AGP-A00002
               orderDate: "2024-12-05"
-              addressOne: "Mekelle"
-              addressTwo: "Mekelle"
+              addressOne: Mekelle
+              addressTwo: Mekelle
               requestedDeliveryDate: "2024-12-21"
               salesQuoteLines:
                 - count: 100
-                  type: "Item"
-                  productNo: "DOCS003"
+                  type: Item
+                  productNo: DOCS003
                   quantity: 1
       responses:
-        "201":
+        '201':
           description: Created
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SalesQuote"
+                $ref: '#/components/schemas/SalesQuote'
 
-  "{{baseUrl}}/api/ech/echgroup/v1.0/salesQuotes('{quoteNo}')":
+  /api/ech/echgroup/v1.0/salesQuotes/{quoteNo}:
     get:
       tags: [Sales Quotes]
       summary: Get a single sales quote
       operationId: getSalesQuote
       parameters:
-        - $ref: "#/components/parameters/QuoteNoPathParam"
-        - $ref: "#/components/parameters/CompanyParam"
-        - $ref: "#/components/parameters/ExpandLinesParam"
+        - $ref: '#/components/parameters/QuoteNoPathParam'
+        - $ref: '#/components/parameters/CompanyParam'
+        - $ref: '#/components/parameters/ExpandLinesParam'
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SalesQuote"
+                $ref: '#/components/schemas/SalesQuote'
     patch:
       tags: [Sales Quotes]
       summary: Update a sales quote
       operationId: updateSalesQuote
       parameters:
-        - $ref: "#/components/parameters/QuoteNoPathParam"
-        - $ref: "#/components/parameters/CompanyParam"
-        - $ref: "#/components/parameters/ExpandLinesParam"
+        - $ref: '#/components/parameters/QuoteNoPathParam'
+        - $ref: '#/components/parameters/CompanyParam'
+        - $ref: '#/components/parameters/ExpandLinesParam'
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/SalesQuoteUpdate"
+              $ref: '#/components/schemas/SalesQuoteUpdate'
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SalesQuote"
+                $ref: '#/components/schemas/SalesQuote'
 
-  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/salesQuotes('{quoteNo}')":
+  /ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/salesQuotes/{quoteNo}:
     patch:
       tags: [Sales Quotes]
       summary: Unblock a sales quote
-      description: >
       operationId: unblockSalesQuote
       parameters:
-        - $ref: "#/components/parameters/QuoteNoPathParam"
+        - $ref: '#/components/parameters/QuoteNoPathParam'
       requestBody:
         required: true
         content:
@@ -360,7 +322,7 @@ paths:
             schema:
               type: object
               properties:
-                Plate No.:
+                'Plate No.':
                   type: string
                   maxLength: 30
                 externalDocumentNo:
@@ -369,19 +331,15 @@ paths:
                 blocked:
                   type: boolean
             example:
-              "Plate No.": "123764"
+              'Plate No.': "123764"
       responses:
-        "200":
+        '200':
           description: OK
 
-  # ---------------------------------------------------------------
-  # 5. Sales Orders (custom REST API)
-  # ---------------------------------------------------------------
-  "{{baseUrl}}/api/ech/echgroup/v1.0/salesOrders('{orderNo}')":
+  /api/ech/echgroup/v1.0/salesOrders/{orderNo}:
     get:
       tags: [Sales Orders]
       summary: Get a single sales order
-      description: >
       operationId: getSalesOrder
       parameters:
         - name: orderNo
@@ -391,15 +349,15 @@ paths:
           schema:
             type: string
             maxLength: 20
-          example: "HO-SQ-44416"
-        - $ref: "#/components/parameters/CompanyParam"
+          example: HO-SQ-44416
+        - $ref: '#/components/parameters/CompanyParam'
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SalesOrder"
+                $ref: '#/components/schemas/SalesOrder'
     patch:
       tags: [Sales Orders]
       summary: Update a sales order (delivery status, plate number, requested delivery date)
@@ -412,74 +370,67 @@ paths:
           schema:
             type: string
             maxLength: 20
-          example: "HO-SQ-44416"
-        - $ref: "#/components/parameters/CompanyParam"
+          example: HO-SQ-44416
+        - $ref: '#/components/parameters/CompanyParam'
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/SalesOrderUpdate"
+              $ref: '#/components/schemas/SalesOrderUpdate'
             examples:
               deliveryStatusAndPlate:
                 summary: Update delivery status / plate number
                 value:
-                  deliveryStatus: "ASM: Customer ready to receive"
+                  deliveryStatus: ASM: Customer ready to receive
                   PlateNo: "12314"
               deliveryDateAndStatus:
                 summary: Update requested delivery date & status
                 value:
                   requestedDeliveryDate: "2025-02-28"
-                  deliveryStatus: "ASM: Not Ready for Delivery"
+                  deliveryStatus: ASM: Not Ready for Delivery
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SalesOrder"
+                $ref: '#/components/schemas/SalesOrder'
 
-  # ---------------------------------------------------------------
-  # 6. Payments
-  # ---------------------------------------------------------------
-  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/createPayment":
+  /ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/createPayment:
     post:
       tags: [Payments]
       summary: Create a payment
-      description: >
       operationId: createPayment
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/PaymentCreate"
+              $ref: '#/components/schemas/PaymentCreate'
             example:
               date: "2025-02-21"
-              externalDocumentNo: "kjlkmlkjljoojkklAT15"
-              customerNo: "AGP-A19800"
+              externalDocumentNo: kjlkmlkjljoojkklAT15
+              customerNo: AGP-A19800
               amount: 500000
-              accountNo: "B-ETB-CBE0001"
-              orderNo: "HO-SO-100431"
-              attachmentUrl: "WWW.EXAMPLE.COM"
+              accountNo: B-ETB-CBE0001
+              orderNo: HO-SO-100431
+              attachmentUrl: WWW.EXAMPLE.COM
       responses:
-        "201":
+        '201':
           description: Created
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Payment"
+                $ref: '#/components/schemas/Payment'
 
-  # ---------------------------------------------------------------
-  # 7. Reference / lookup data (all read-only)
-  # ---------------------------------------------------------------
-  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/bankDetails":
+  /ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/bankDetails:
     get:
       tags: [Reference Data]
       summary: List bank details
       operationId: listBankDetails
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -489,9 +440,9 @@ paths:
                   value:
                     type: array
                     items:
-                      $ref: "#/components/schemas/BankDetail"
+                      $ref: '#/components/schemas/BankDetail'
 
-  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/salesPerson":
+  /ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/salesPerson:
     get:
       tags: [Reference Data]
       summary: List sales persons, or a single one via $filter
@@ -504,7 +455,7 @@ paths:
             type: string
           example: "code eq 'AA001'"
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -514,15 +465,15 @@ paths:
                   value:
                     type: array
                     items:
-                      $ref: "#/components/schemas/SalesPerson"
+                      $ref: '#/components/schemas/SalesPerson'
 
-  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/getGeography":
+  /ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/getGeography:
     get:
       tags: [Reference Data]
       summary: List geography reference data (post codes, territories, etc.)
       operationId: getGeography
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -532,15 +483,15 @@ paths:
                   value:
                     type: array
                     items:
-                      $ref: "#/components/schemas/Geography"
+                      $ref: '#/components/schemas/Geography'
 
-  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/getSalesShipment":
+  /ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/getSalesShipment:
     get:
       tags: [Reference Data]
       summary: List sales shipments
       operationId: getSalesShipment
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -552,13 +503,13 @@ paths:
                     items:
                       type: object
 
-  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/getBankLedger":
+  /ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/getBankLedger:
     get:
       tags: [Reference Data]
       summary: List bank ledger entries
       operationId: getBankLedger
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -570,13 +521,13 @@ paths:
                     items:
                       type: object
 
-  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/OrdersandItems":
+  /ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/OrdersandItems:
     get:
       tags: [Reference Data]
       summary: List sales orders joined with their item lines
       operationId: getOrdersAndItems
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -588,13 +539,13 @@ paths:
                     items:
                       type: object
 
-  "{{baseUrl}}/ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/salesQuoteandItems":
+  /ODataV4/Company('AGP%20Poultry%20PLC%20%28Ethiopia%29')/salesQuoteandItems:
     get:
       tags: [Reference Data]
       summary: List sales quotes joined with their item lines
       operationId: getSalesQuoteAndItems
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -607,17 +558,6 @@ paths:
                       type: object
 
 components:
-
-  # securitySchemes:
-  #   oauth2ClientCredentials:
-  #     type: oauth2
-  #     description: >
-  #       Azure AD OAuth 2.0 client credentials flow.
-  #       Token endpoint: https://login.microsoftonline.com/{TENANT_ID}/oauth2/v2.0/token
-  #     flows:
-  #       clientCredentials:
-  #         tokenUrl: https://login.microsoftonline.com/{TENANT_ID}/oauth2/v2.0/token
-
   parameters:
     CompanyParam:
       name: company
@@ -626,8 +566,8 @@ components:
       description: Company name, used by the custom REST API instead of a path segment.
       schema:
         type: string
-        default: "AGP Poultry PLC (Ethiopia)"
-      example: "AGP Poultry PLC (Ethiopia)"
+        default: AGP Poultry PLC (Ethiopia)
+      example: AGP Poultry PLC (Ethiopia)
     ExpandLinesParam:
       name: $expand
       in: query
@@ -643,11 +583,9 @@ components:
       schema:
         type: string
         maxLength: 20
-      example: "AD-SQ-24782"
+      example: AD-SQ-24782
 
   schemas:
-
-    # ---- Customers ----
     Customer:
       type: object
       properties:
@@ -681,19 +619,19 @@ components:
         country:
           type: string
           maxLength: 10
-          description: Auto-populated from the post code lookup.          
+          description: Auto-populated from the post code lookup.
         territory:
           type: string
           maxLength: 10
-          description: Auto-populated from the post code lookup.          
+          description: Auto-populated from the post code lookup.
         city:
           type: string
           maxLength: 30
-          description: Auto-populated from the post code lookup.          
+          description: Auto-populated from the post code lookup.
         postCode:
           type: string
           maxLength: 20
-          description: Auto-populated from the post code lookup.          
+          description: Auto-populated from the post code lookup.
         addressOne:
           type: string
           maxLength: 100
@@ -708,7 +646,7 @@ components:
           type: string
           maxLength: 20
           readOnly: true
-          enum: [Open, Released, "Pending Approval", "Pending Prepayment"]
+          enum: [Open, Released, Pending Approval, Pending Prepayment]
         dateOfBirth:
           type: string
           format: date
@@ -722,23 +660,23 @@ components:
           type: string
           maxLength: 10
         Agent_Kebele:
-          type: file
-          description: >
-            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.          
+          type: string
+          format: binary
+          description: Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.
         Agent_Contact_Information:
-          type: file
-          description: >
-            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.           
+          type: string
+          format: binary
+          description: Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.
         Standby_Person:
-          type: file
-          description: >
-            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.
+          type: string
+          format: binary
+          description: Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.
         Agreement:
-          type: file
-          description: >
-            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx. 
-            
-    Customer Update:
+          type: string
+          format: binary
+          description: Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.
+
+    CustomerUpdate:
       type: object
       properties:
         customerNo:
@@ -761,7 +699,6 @@ components:
           type: string
           format: email
           maxLength: 80
-          description: Customer email address.
         alternativePhoneNo:
           type: string
           maxLength: 30
@@ -771,19 +708,15 @@ components:
         country:
           type: string
           maxLength: 10
-          description: Auto-populated from the post code lookup.          
         territory:
           type: string
           maxLength: 10
-          description: Auto-populated from the post code lookup.          
         city:
           type: string
           maxLength: 30
-          description: Auto-populated from the post code lookup.          
         postCode:
           type: string
           maxLength: 20
-          description: Auto-populated from the post code lookup.          
         addressOne:
           type: string
           maxLength: 100
@@ -798,7 +731,7 @@ components:
           type: string
           maxLength: 20
           readOnly: true
-          enum: [Open, Released, "Pending Approval", "Pending Prepayment"]
+          enum: [Open, Released, Pending Approval, Pending Prepayment]
         dateOfBirth:
           type: string
           format: date
@@ -811,18 +744,6 @@ components:
         priceGroup:
           type: string
           maxLength: 10
-        Agent_Kebele:
-          type: file
-          description: >
-            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.          
-        Agent_Contact_Information:
-          type: file
-          description: >
-            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.           
-        Standby_Person:
-          type: file
-          description: >
-            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.
         companyName:
           type: string
           description: Name of the companies.
@@ -830,15 +751,22 @@ components:
           type: string
           format: uuid
           description: System ID (GUID) of the company.
+        Agent_Kebele:
+          type: string
+          format: binary
+        Agent_Contact_Information:
+          type: string
+          format: binary
+        Standby_Person:
+          type: string
+          format: binary
         Agreement:
-          type: file
-          description: >
-            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx. 
+          type: string
+          format: binary
 
     CustomerCreate:
       type: object
-      required:
-        - priceGroup
+      required: [priceGroup]
       properties:
         name:
           type: string
@@ -864,19 +792,15 @@ components:
         country:
           type: string
           maxLength: 10
-          description: Auto-populated from the post code lookup.          
         territory:
           type: string
           maxLength: 10
-          description: Auto-populated from the post code lookup.          
         city:
           type: string
           maxLength: 30
-          description: Auto-populated from the  post code lookup.          
         postCode:
           type: string
           maxLength: 20
-          description: Auto-populated from the  post code lookup.  
         addressOne:
           type: string
           maxLength: 100
@@ -894,28 +818,23 @@ components:
           maxLength: 40
         priceGroup:
           type: string
-          option: [AGENT, DEALER, AGENT-DEAL]
+          enum: [AGENT, DEALER, AGENT-DEAL]
           description: >
             MANDATORY. Anything else throws "Invalid Price Group %1.
             Expected AGENT or DEALER."
         Agent_Kebele:
-          type: file
-          description: >
-            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.         
+          type: string
+          format: binary
         Agent_Contact_Information:
-          type: file
-          description: >
-            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.        
+          type: string
+          format: binary
         Standby_Person:
-          type: file
-          description: >
-            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx. 
+          type: string
+          format: binary
         Agreement:
-          type: file
-          description: >
-            Document type of .jpg, .jpeg, .png, .pdf, .doc, .docx.     
+          type: string
+          format: binary
 
-    # ---- Products & Pricing ----
     Product:
       type: object
       properties:
@@ -965,9 +884,10 @@ components:
           type: number
           format: double
           readOnly: true
-ProductNotification:
-    type: object
-    properties:
+
+    ProductNotification:
+      type: object
+      properties:
         companyName:
           type: string
           description: Name of the company in Business Central.
@@ -994,9 +914,10 @@ ProductNotification:
         ActionType:
           type: string
           description: Action triggered (e.g., Insert, Modify, Delete).
-  PriceListLineNotification:
-    type: object
-    properties:
+
+    PriceListLineNotification:
+      type: object
+      properties:
         companyName:
           type: string
           description: Name of the company in Business Central.
@@ -1007,350 +928,144 @@ ProductNotification:
         productNo:
           type: string
           maxLength: 20
-          description: PriceListLine."Asset No."
-        unitPrice:
-          type: number
-          format: double
-          description: Unit Price Including VAT.
-        unitOfMeasure:
-          type: string
-          maxLength: 10
-          description: Unit of Measure Code.
-        currencyCode:
-          type: string
-          maxLength: 10
-          description: Currency Code.
-        startDate:
-          type: string
-          format: date
-          description: Starting Date.
-        endDate:
-          type: string
-          format: date
-          description: Ending Date.
-        type:
-          type: string
-          maxLength: 20
-          description: Line or asset type.
-        name:
-          type: string
-          maxLength: 100
-          description: PriceListLine.Description.
-        status:
-          type: boolean
-          description: Active or inactive status.
-        priceGroup:
-          type: string
-          maxLength: 20
-          description: PriceListHeader."Assign-to No." (e.g., AGENT or DEALER code).
-        locationCode:
-          type: string
-          maxLength: 10
-          description: Location Code.
-        ActionType:
-          type: string
-          description: Action triggered (Insert, Modify, Delete).
-          
-    # ---- Sales Quotes / Orders ----
-    SalesQuoteLine:
-      type: object
-      required:
-        - productNo
-        - quantity
-      properties:
-        orderNo:
-          type: string
-          maxLength: 20
-          readOnly: true
-          description: Document No.; inherited from parent header.
-        count:
-          type: integer
-          readOnly: true
-          description: Line No.
-        type:
-          type: string
-          enum: [" ", "G/L Account", Item, Resource, "Fixed Asset", "Charge (Item)", "Allocation Account"]
-        itemType:
-          type: string
-          maxLength: 20
-          readOnly: true
-          description: Gen. Prod. Posting Group, derived from the item.
-        productNo:
-          type: string
-          maxLength: 20
-        quantity:
-          type: number
-          format: double
-        unitPrice:
-          type: number
-          format: double
-          description: Normally auto-calculated from the price list if omitted.
-
-    SalesQuoteCreate:
-      type: object
-      required:
-        - customerNo
-        - salesPersonCode
-        - salesQuoteLines
-      properties:
-        customerNo:
-          type: string
-          maxLength: 20
-          description: Sell-to Customer No.
-        salesPersonCode:
-          type: string
-          maxLength: 20
-        addressOne:
-          type: string
-          maxLength: 100
-        addressTwo:
-          type: string
-          maxLength: 50
-        city:
-          type: string
-          maxLength: 30
-        orderDate:
-          type: string
-          format: date
-        requestedDeliveryDate:
-          type: string
-          format: date
-          description: Maps to Due Date.
-        promisedDeliveryDate:
-          type: string
-          format: date
-          description: Also maps to Due Date (same underlying field).
-        blocked:
-          type: boolean
-        yourReference:
-          type: string
-          maxLength: 35
-        externalDocumentNo:
-          type: string
-          maxLength: 35
-        salesQuoteLines:
-          type: array
-          items:
-            $ref: "#/components/schemas/SalesQuoteLine"
-
-    SalesQuoteUpdate:
-      allOf:
-        - $ref: "#/components/schemas/SalesQuoteCreate"
-      description: Same shape as create; all fields optional on update.
+          description: Item "No." from Business Central.
 
     SalesQuote:
       type: object
       properties:
-        orderNo:
+        quoteNo:
           type: string
-          maxLength: 20
-          readOnly: true
-          description: Sales Header "No."; auto-assigned by No. Series.
         customerNo:
           type: string
-          maxLength: 20
-        salesPersonCode:
-          type: string
-          maxLength: 20
-        addressOne:
-          type: string
-          maxLength: 100
-        addressTwo:
-          type: string
-          maxLength: 50
-        city:
-          type: string
-          maxLength: 30
-        orderType:
-          type: string
-          enum: [Normal, "Package Sale"]
-          readOnly: true
-        status:
-          type: string
-          enum: [Open, Released, "Pending Approval", "Pending Prepayment"]
-          readOnly: true
         orderDate:
           type: string
           format: date
         requestedDeliveryDate:
           type: string
           format: date
-        promisedDeliveryDate:
+        status:
           type: string
-          format: date
-        deliveryStatus:
-          $ref: "#/components/schemas/DeliveryStatus"
-        responsibilityCenter:
-          type: string
-          maxLength: 10
-          readOnly: true
-          description: Auto-populated from the customer's post code lookup.
-        blocked:
-          type: boolean
-        yourReference:
-          type: string
-          maxLength: 35
-        externalDocumentNo:
-          type: string
-          maxLength: 35
         salesQuoteLines:
           type: array
           items:
-            $ref: "#/components/schemas/SalesQuoteLine"
+            $ref: '#/components/schemas/SalesQuoteLine'
 
-    DeliveryStatus:
-      type: string
-      enum:
-        - Pending
-        - "Ready for Delivery"
-        - "Picked for Delivery"
-        - "ASM: Not Ready for Delivery"
-        - "ASM: Customer ready to receive"
+    SalesQuoteLine:
+      type: object
+      properties:
+        lineNo:
+          type: integer
+        count:
+          type: integer
+        type:
+          type: string
+        productNo:
+          type: string
+        quantity:
+          type: number
+          format: double
+
+    SalesQuoteCreate:
+      type: object
+      properties:
+        customerNo:
+          type: string
+        orderDate:
+          type: string
+          format: date
+        addressOne:
+          type: string
+        addressTwo:
+          type: string
+        requestedDeliveryDate:
+          type: string
+          format: date
+        salesQuoteLines:
+          type: array
+          items:
+            $ref: '#/components/schemas/SalesQuoteLine'
+
+    SalesQuoteUpdate:
+      type: object
+      properties:
+        customerNo:
+          type: string
+        requestedDeliveryDate:
+          type: string
+          format: date
+        status:
+          type: string
 
     SalesOrder:
-      allOf:
-        - $ref: "#/components/schemas/SalesQuote"
-        - type: object
-          properties:
-            ResponsibilityCenter:
-              type: string
-              maxLength: 10
+      type: object
+      properties:
+        orderNo:
+          type: string
+        quoteNo:
+          type: string
+        customerNo:
+          type: string
+        requestedDeliveryDate:
+          type: string
+          format: date
+        deliveryStatus:
+          type: string
+        PlateNo:
+          type: string
 
     SalesOrderUpdate:
       type: object
       properties:
-        deliveryStatus:
-          $ref: "#/components/schemas/DeliveryStatus"
-        PlateNo:
-          type: string
-          maxLength: 30
         requestedDeliveryDate:
           type: string
           format: date
+        deliveryStatus:
+          type: string
+        PlateNo:
+          type: string
 
-    # ---- Payments ----
+    Payment:
+      type: object
+      properties:
+        id:
+          type: string
+        customerNo:
+          type: string
+        amount:
+          type: number
+          format: double
+        date:
+          type: string
+          format: date
+
     PaymentCreate:
       type: object
-      required:
-        - date
-        - customerNo
-        - amount
-        - accountNo
       properties:
         date:
           type: string
           format: date
-          description: Maps to Posting Date.
         externalDocumentNo:
           type: string
-          maxLength: 35
-          description: >
-            Must be unique per journal template/batch if supplied — a
-            duplicate throws "The External Document No. %1 already
-            exists."
         customerNo:
           type: string
-          maxLength: 20
-          description: Maps to Customer No.
         amount:
           type: number
           format: double
-          description: >
-            Positive amounts are automatically negated on validate
-            (payments are stored as credits).
         accountNo:
           type: string
-          maxLength: 20
-          description: Maps to Bal. Account No. — the bank account receiving the payment.
         orderNo:
           type: string
-          maxLength: 20
-          description: Maps to Sales Quote No.
         attachmentUrl:
           type: string
-          maxLength: 400
-          description: >
-            Maps to a field literally named Picture in the journal line
-            extension, despite holding a URL string, not an image.
 
-    Payment:
-      allOf:
-        - $ref: "#/components/schemas/PaymentCreate"
-        - type: object
-          properties:
-            paymentNo:
-              type: string
-              format: uuid
-              readOnly: true
-              description: Returned as the record's SystemId.
-
-    # ---- Reference data ----
     BankDetail:
       type: object
-      properties:
-        name:
-          type: string
-          maxLength: 20
-        description:
-          type: string
-          maxLength: 100
-        balAccountNo:
-          type: string
-          maxLength: 20
+      properties: {}
 
     SalesPerson:
       type: object
-      properties:
-        code:
-          type: string
-          maxLength: 20
-        name:
-          type: string
-          maxLength: 50
-        type:
-          type: string
-          maxLength: 30
-          description: Job Title.
-        RSM:
-          type: string
-          maxLength: 20
-        NSM:
-          type: string
-          maxLength: 20
-        phoneNumber:
-          type: string
-          maxLength: 30
-        blocked:
-          type: boolean
+      properties: {}
 
     Geography:
       type: object
-      properties:
-        Level_3:
-          type: string
-          maxLength: 20
-          description: Post Code.
-        Level_2:
-          type: string
-          maxLength: 30
-          description: City.
-        Level_1:
-          type: string
-          maxLength: 20
-          description: Territory.
-        Country:
-          type: string
-          maxLength: 10
-        Responsibility_Center:
-          type: string
-          maxLength: 10
-        Transport_Method:
-          type: string
-          maxLength: 10
-        Sales_Representative:
-          type: string
-          maxLength: 10
-        Population:
-          type: integer
-
-
+      properties: {}
